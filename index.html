@@ -284,6 +284,8 @@
 
 			var originalZoomLevel = map.getZoom();
 
+			var loadedLayers = [];
+
 			function setVisibilityState(params) {
 				if ((params.visibleOnLoad === undefined) || (params.visibleOnLoad === false)) {
 					if ((params.legendID !== undefined) && (params.legendID !== false)) {
@@ -320,6 +322,7 @@
 					map.on("zoomend", function(){
 						map.setLayoutProperty(params.layerName, 'icon-size', (1 + (map.getZoom() / originalZoomLevel - 1) * params.scalingFactor) * params.iconSize);
 					});
+					loadedLayers.push(params.layerName);
 				});
 			}
 
@@ -348,6 +351,7 @@
 						},
 						params.displayBehind
 					);
+					loadedLayers.push(params.lineLayerName);
 				}
 				if ((params.polygonLayerName !== undefined) && (params.polygonLayerName !== false)) {
 					if (params.usedInZoomControl) { visibilityState = 'visible'; }
@@ -366,6 +370,7 @@
 							},
 						}
 					);
+					loadedLayers.push(params.polygonLayerName);
 				}
 			}
 
@@ -513,6 +518,7 @@
 				);
 
 				runWhenLoadComplete();
+				console.log(loadedLayers);
 
 			});
 
