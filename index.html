@@ -94,10 +94,14 @@
 				for (i in polygons) {
 					select.options[select.options.length] = new Option(
 						polygons[i].name,
-						polygons[i].bbox
+						polygons[i].bbox.toString() + ',' + polygons[i].name
 					);
 					if (urlParams["zoomto"] && urlParams["zoomto"].toString() === polygons[i].name.toString()) {
-						zoomToPolygon(sourceID, polygons[i].bbox.toString());
+						if (showHouseDistricts) {
+							zoomToPolygon(sourceID, polygons[i].bbox.toString() + ',' + polygons[i].name, 'house_dist');
+						} else if (showSenateDistricts) {
+							zoomToPolygon(sourceID, polygons[i].bbox.toString() + ',' + polygons[i].name, 'senate_dist');
+						}
 					}
 				}
 			}
@@ -175,7 +179,7 @@
 				return [[minX, minY], [maxX, maxY]];
 			}
 
-			function zoomToPolygon(sourceID, coords) {
+			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
 					coords = coords.split(",");
 					bbox = [
@@ -183,6 +187,10 @@
 						[coords[2], coords[3]]
 					];
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
+					if (filterField !== undefined) {
+						console.log("Filtering to", filterField, coords[4]);
+
+					}
 				}
 			}
 		</script>
@@ -203,8 +211,8 @@
 
 				<!--Drop down controls-->
 
-				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value);"></select>
-				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value);"></select>
+				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'house_dist');"></select>
+				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'senate_dist');"></select>
 
 				<br /><br />
 				Map produced by <a href="http://www.coregis.net/" target="_blank">CoreGIS</a>.
@@ -521,8 +529,6 @@
 				);
 
 				runWhenLoadComplete();
-				console.log(loadedLayers);
-
 			});
 
 		// This is the popup for the merged boundary layers
