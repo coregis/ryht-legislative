@@ -68,7 +68,6 @@
 					setTimeout(runWhenLoadComplete, 100);
 				}
 				else {
-					populateZoomControl("school-districts-control", "texas-school-districts", "NAME", "Texas School Districts");
 					if (showHouseDistricts) {
 						populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
 					}
@@ -188,8 +187,6 @@
 
 				<!--Drop down controls-->
 
-				<select id="school-districts-control" onchange="zoomToPolygon('texas-school-districts', this.value, 'NAME');"></select>
-				<br /><br />
 				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'District');"></select>
 				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'District');"></select>
 
@@ -236,7 +233,6 @@
 						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
 						<li onClick="showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li onClick="showHideLayer('districts-of-innovation-poly-fill', markerName='districts_of_innovation_poly');"><span id="districts_of_innovation_poly" class="inactive"></span>Districts of Innovation</li>
-						<li onClick="showHideLayer('texas-school-districts-lines', markerName='texas_school_districts');"><span id="texas_school_districts" class="inactive"></span>Texas School Districts</li>
 						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
 						<li id="senate_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
 					</ul>
@@ -449,39 +445,22 @@
 					}
 				);
 
-				addVectorLayer(
-					map,
-					{
-						'sourceName': 'texas-school-districts', // data source name for internal use
-						'sourceID': 'texas_school_districts_v2', // name of the Mapbox layer from which the data will be loaded
-						'sourceURL': 'mapbox://core-gis.e4af0de1', // Mapbox URL
-						'lineLayerName': 'texas-school-districts-lines', // OPTIONAL name we'll use for the layer that shows the outlines. Leave out or set to false if you don't want outlines displayed.
-						'lineColor': '#a1b082', // colour to draw those outlines with; safe to leave out if we're not drawing outlines, but must be explicitly set if we are
-						'legendID': 'texas_school_districts', // OPTIONAL: the id in the legend, so we can set it to active or inactive as appropriate. Simply leave out for layers that don't appear in the legend
-						'displayBehind': 'country-label-sm', // ID of another existing layer, which Mapbox will make sure this one gets drawn behind
-						'polygonLayerName': 'texas-school-districts-poly', // OPTIONAL name we'll use for the layer that invisibly stores the polygon extents. Needed if we're either going to add this layer to either the zoom to districts control or set click events (e.g. popups) on it.	Leave out or set to false if you don't want one.
-						'polygonFillColor': 'rgba(200, 100, 240, 0)', // colour to fill polygons with. Needed if there's going to be a polygon layer; simply leave out if not.
-						'polygonOutlineColor': 'rgba(200, 100, 240, 0)', // colour to draw polygon boundaries with. Needed if there's going to be a polygon layer; simply leave out if not.
-						'visibleOnLoad': false, // set this optional argument to true to have the layer visible on load. Leave out or set to false to have it hidden on load
-						'usedInZoomControl': true // set this optional argument to true if this layer will be used in the Zoom to Districts control, otherwise leave it out or set it to false.
-					}
-				);
-
 				if (showSenateDistricts) {
 					addVectorLayer(
 						map,
 						{
-							'sourceName': 'state-senate-districts',
-							'sourceID': 'state_senate_districts-0g2odu',
-							'sourceURL': 'mapbox://core-gis.b2eu90mx',
-							'lineLayerName': 'state-senate-districts-lines',
-							'lineColor': '#a1b082',
-							'legendID': 'state_senate_districts',
-							'displayBehind': 'raising-school-leaders-points',
-							'polygonLayerName': 'state-senate-districts-poly',
-							'polygonFillColor': 'rgba(200, 100, 240, 0)',
-							'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
-							'usedInZoomControl': true
+							'sourceName': 'state-senate-districts', // data source name for internal use
+							'sourceID': 'state_senate_districts-0g2odu', // name of the Mapbox layer from which the data will be loaded
+							'sourceURL': 'mapbox://core-gis.b2eu90mx', // Mapbox URL
+							'lineLayerName': 'state-senate-districts-lines', // OPTIONAL name we'll use for the layer that shows the outlines. Leave out or set to false if you don't want outlines displayed.
+							'lineColor': '#a1b082', // colour to draw those outlines with; safe to leave out if we're not drawing outlines, but must be explicitly set if we are
+							'legendID': 'state_senate_districts', // OPTIONAL: the id in the legend, so we can set it to active or inactive as appropriate. Simply leave out for layers that don't appear in the legend
+							'displayBehind': 'raising-school-leaders-points', // ID of another existing layer, which Mapbox will make sure this one gets drawn behind
+							'polygonLayerName': 'state-senate-districts-poly', // OPTIONAL name we'll use for the layer that invisibly stores the polygon extents. Needed if we're either going to add this layer to either the zoom to districts control or set click events (e.g. popups) on it.	Leave out or set to false if you don't want one.
+							'polygonFillColor': 'rgba(200, 100, 240, 0)', // colour to fill polygons with. Needed if there's going to be a polygon layer; simply leave out if not.
+							'polygonOutlineColor': 'rgba(200, 100, 240, 0)', // colour to draw polygon boundaries with. Needed if there's going to be a polygon layer; simply leave out if not.
+							'visibleOnLoad': false, // set this optional argument to true to have the layer visible on load. Leave out or set to false to have it hidden on load
+							'usedInZoomControl': true // set this optional argument to true if this layer will be used in the Zoom to Districts control, otherwise leave it out or set it to false.
 						}
 					);
 				}
