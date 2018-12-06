@@ -88,11 +88,14 @@
 			}
 
 			function populateZoomControl(selectID, sourceID, fieldName, layerName) {
-				polygonNames = getIDsList(sourceID, fieldName);
+				polygons = getPolygons(sourceID, fieldName);
 				var select = document.getElementById(selectID);
 				select.options[0] = new Option(layerName);
-				for (i in polygonNames) {
-					select.options[select.options.length] = new Option(polygonNames[i], polygonNames[i]);
+				for (i in polygons) {
+					select.options[select.options.length] = new Option(
+						polygons[i].name,
+						polygons[i].bbox
+					);
 				}
 			}
 
@@ -103,70 +106,80 @@
 				}
 			}
 
-			function getIDsList(sourceID, fieldName) {
+			function getPolygons(sourceID, nameField) {
 				layerID = map.getSource(sourceID).vectorLayerIds[0];
 				features = map.querySourceFeatures(sourceID, {'sourceLayer': layerID})
-				featureNames = []
+				polygons = [];
+				existingItems = [];
 				for (i in features) {
-					featureName = features[i].properties[fieldName]
-					if (typeof featureName !== undefined) {
-						if (featureNames.indexOf(featureName) < 0) {
-							featureNames.push(featureName);
+					existing = existingItems.indexOf(features[i].properties[nameField]);
+					if (existing > -1) {
+						polygons[existing].bbox = getFeatureBounds(
+							features[i].toJSON().geometry.coordinates,
+							polygons[existing].bbox
+						);
+					}
+					else {
+						existingItems.push(features[i].properties[nameField]);
+						polygons.push({
+							name: features[i].properties[nameField],
+							bbox: getFeatureBounds(features[i].toJSON().geometry.coordinates)
+						});
+					}
+				}
+				polygons.sort(function(a, b){
+					var x = a.name;
+					var y = b.name;
+					if (x < y) {return -1;}
+					if (x > y) {return 1;}
+					return 0;
+				});
+				return polygons;
+			}
+
+			function getFeatureBounds(coords, startingBBOX) {
+				if (startingBBOX === undefined) {
+					minX = 180;
+					maxX = -180;
+					minY = 90;
+					maxY = -90;
+				}
+				else {
+					minX = startingBBOX[0][0];
+					maxX = startingBBOX[1][0];
+					minY = startingBBOX[0][1];
+					maxY = startingBBOX[1][1];
+				}
+				for (i in coords) {
+					// coords may be a simple array of coords, or an array of arrays if it's a multipolygon
+					for (j in coords[i]) {
+						if (!(coords[i][j][0] instanceof Array)) {
+							if (coords[i][j][0] < minX) { minX = coords[i][j][0]; }
+							if (coords[i][j][0] > maxX) { maxX = coords[i][j][0]; }
+							if (coords[i][j][1] < minY) { minY = coords[i][j][1]; }
+							if (coords[i][j][1] > maxY) { maxY = coords[i][j][1]; }
+						}
+						else {
+							for (k in coords[i][j]) {
+								if (coords[i][j][k][0] < minX) { minX = coords[i][j][k][0]; }
+								if (coords[i][j][k][0] > maxX) { maxX = coords[i][j][k][0]; }
+								if (coords[i][j][k][1] < minY) { minY = coords[i][j][k][1]; }
+								if (coords[i][j][k][1] > maxY) { maxY = coords[i][j][k][1]; }
+							}
 						}
 					}
 				}
-				// if the IDs are numeric we have to make sure they get sorted as numbers not as text
-				if (typeof featureNames[0] !== undefined && !isNaN(parseFloat(featureNames[0])) && isFinite(featureNames[0])) {
-					return featureNames.sort(function(a, b){return a-b});
-				}
-				else { return featureNames.sort(); }
+				return [[minX, minY], [maxX, maxY]];
 			}
 
-			function zoomToPolygon(sourceID, itemID, fieldName) {
-				// first quickly zoom out to the full layer area
-				map.fitBounds(map.getSource(sourceID).bounds, options={duration: 0});
-				// if we haven't passed in an itemID, then just stop there; otherwise continue with the zoom in
-				if (typeof itemID !== 'undefined') {
-					// use a timeout here to make sure that the zoom in doesn't try to start before the zoom out has finished
-					setTimeout(
-						function(){
-							layerBounds = map.getSource(sourceID).bounds;
-							layerID = map.getSource(sourceID).vectorLayerIds[0];
-							features = map.querySourceFeatures(sourceID, {'sourceLayer': layerID})
-							minX = layerBounds[2];
-							maxX = layerBounds[0];
-							minY = layerBounds[3];
-							maxY = layerBounds[1];
-							// then step through features - first to find the item we want
-							for (i in features) {
-								if (features[i].properties[fieldName] == itemID) {
-									coords = features[i].toJSON().geometry.coordinates;
-									for (j in coords) {
-										// then the coords returned may be a simple array of coords, or an array of arrays if it's a multipolygon
-										for (k in coords[j]) {
-											if (!(coords[j][k][0] instanceof Array)) {
-												if (coords[j][k][0] < minX) { minX = coords[j][k][0]; }
-												if (coords[j][k][0] > maxX) { maxX = coords[j][k][0]; }
-												if (coords[j][k][1] < minY) { minY = coords[j][k][1]; }
-												if (coords[j][k][1] > maxY) { maxY = coords[j][k][1]; }
-											}
-											else {
-												for (l in coords[j][k]) {
-													if (coords[j][k][l][0] < minX) { minX = coords[j][k][l][0]; }
-													if (coords[j][k][l][0] > maxX) { maxX = coords[j][k][l][0]; }
-													if (coords[j][k][l][1] < minY) { minY = coords[j][k][l][1]; }
-													if (coords[j][k][l][1] > maxY) { maxY = coords[j][k][l][1]; }
-												}
-											}
-										}
-									}
-								}
-							}
-							// having found the bounds, the rest is easy
-							map.fitBounds([[minX, minY], [maxX, maxY]], options={padding: 10});
-						},
-						100
-					); // end of setTimeout block
+			function zoomToPolygon(sourceID, coords) {
+				if (typeof coords !== 'undefined') {
+					coords = coords.split(",");
+					bbox = [
+						[coords[0], coords[1]],
+						[coords[2], coords[3]]
+					];
+					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 				}
 			}
 		</script>
@@ -187,8 +200,8 @@
 
 				<!--Drop down controls-->
 
-				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'District');"></select>
-				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'District');"></select>
+				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value);"></select>
+				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value);"></select>
 
 				<br /><br />
 				Map produced by <a href="http://www.coregis.net/" target="_blank">CoreGIS</a>.
