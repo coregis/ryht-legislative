@@ -69,7 +69,12 @@
 				}
 				else {
 					populateZoomControl("school-districts-control", "texas-school-districts", "NAME", "Texas School Districts");
-					populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
+					if (showHouseDistricts) {
+						populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
+					}
+					if (showSenateDistricts) {
+						populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
+					}
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
 					setTimeout(function(){
 						map.moveLayer('raising-blended-learners-points', 'raising-family-partnerships-points');
