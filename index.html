@@ -44,9 +44,9 @@
 			}
 			// now we can check the two showXDistricts variables anywhere that we might introduce House or Senate districts to decide which one to show
 
-			function showHideLayer(layerName, markerName) {
+			function showHideLayer(layerName, markerName, showOnly=false, hideOnly=false) {
 				var visibility = map.getLayoutProperty(layerName, 'visibility');
-					if (visibility === 'visible') {
+					if ((visibility === 'visible' || hideOnly) && !showOnly) {
 						map.setLayoutProperty(layerName, 'visibility', 'none');
 						this.className = '';
 					document.getElementById(markerName).classList.add('inactive');
@@ -99,8 +99,10 @@
 					if (urlParams["zoomto"] && urlParams["zoomto"].toString() === polygons[i].name.toString()) {
 						if (showHouseDistricts) {
 							zoomToPolygon(sourceID, polygons[i].bbox.toString() + ',' + polygons[i].name, 'house_dist');
+							showHideLayer('state-house-districts-lines', markerName='state_house_districts', showOnly=true);
 						} else if (showSenateDistricts) {
 							zoomToPolygon(sourceID, polygons[i].bbox.toString() + ',' + polygons[i].name, 'senate_dist');
+							showHideLayer('state-senate-districts-lines', markerName='state_senate_districts', showOnly=true);
 						}
 					}
 				}
