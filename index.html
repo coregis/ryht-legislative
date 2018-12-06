@@ -96,6 +96,9 @@
 						polygons[i].name,
 						polygons[i].bbox
 					);
+					if (urlParams["zoomto"] && urlParams["zoomto"].toString() === polygons[i].name.toString()) {
+						zoomToPolygon(sourceID, polygons[i].bbox.toString());
+					}
 				}
 			}
 
