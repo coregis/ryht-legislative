@@ -31,6 +31,19 @@
 		</style>
 
 		<script>
+			// first we check for the URL parameter '?districts=senate'.  If found, we'll show state senate districts; otherwise state house
+			var urlParams = {};
+			var urlParts = window.location.href.replace(
+				/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {urlParams[key] = value;}
+			);
+			var showHouseDistricts = true;
+			var showSenateDistricts = false;
+			if (urlParams["districts"] && urlParams["districts"] === "senate") {
+				showHouseDistricts = false;
+				showSenateDistricts = true;
+			}
+			// now we can check the two showXDistricts variables anywhere that we might introduce House or Senatre districts to decide which one to show
+
 			function showHideLayer(layerName, markerName) {
 				var visibility = map.getLayoutProperty(layerName, 'visibility');
 					if (visibility === 'visible') {
@@ -56,7 +69,6 @@
 				}
 				else {
 					populateZoomControl("school-districts-control", "texas-school-districts", "NAME", "Texas School Districts");
-					populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
 					populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
 					setTimeout(function(){
@@ -77,6 +89,13 @@
 				select.options[0] = new Option(layerName);
 				for (i in polygonNames) {
 					select.options[select.options.length] = new Option(polygonNames[i], polygonNames[i]);
+				}
+			}
+
+			function removeElement(id) {
+				var elementToRemove = document.getElementById(id);
+				if (elementToRemove) {
+					elementToRemove.parentNode.removeChild(elementToRemove);
 				}
 			}
 
@@ -167,7 +186,6 @@
 				<select id="school-districts-control" onchange="zoomToPolygon('texas-school-districts', this.value, 'NAME');"></select>
 				<br /><br />
 				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'District');"></select>
-				<br /><br />
 				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'District');"></select>
 
 				<br /><br />
@@ -211,14 +229,11 @@
 						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
 						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Raising Texas Teachers</li>
 						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
-		<!--
-						<li onClick="showHideLayer('districts-of-innovation-points', markerName='districts_of_innovation');"><span id="districts_of_innovation" class="inactive"></span>Districts of Innovation</li>
-		-->
 						<li onClick="showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li onClick="showHideLayer('districts-of-innovation-poly-fill', markerName='districts_of_innovation_poly');"><span id="districts_of_innovation_poly" class="inactive"></span>Districts of Innovation</li>
 						<li onClick="showHideLayer('texas-school-districts-lines', markerName='texas_school_districts');"><span id="texas_school_districts" class="inactive"></span>Texas School Districts</li>
-						<li onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
-						<li onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
+						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
+						<li id="senate_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
 					</ul>
 				</div>
 				<div class='legend-source'>Source: <a href="https://www.raiseyourhandtexas.org/" target="_blank">Raise Your Hand Texas</a></div>
@@ -227,6 +242,18 @@
 		</div>
 
 		<script>
+			// make appropriate legend entry visible, and remove whichever zoom-to-districts dropdown we're not going to be using
+			if (showHouseDistricts) {
+				document.getElementById("house_districts_legend_entry").style.display = "inline";
+			} else {
+				removeElement("house-districts-control"); // the dropdown menu
+			}
+			if (showSenateDistricts) {
+				document.getElementById("senate_districts_legend_entry").style.display = "inline";
+			} else {
+				removeElement("senate-districts-control");
+			}
+
 			mapboxgl.accessToken = 'pk.eyJ1IjoiY29yZS1naXMiLCJhIjoiaUxqQS1zQSJ9.mDT5nb8l_dWIHzbnOTebcQ';
 
 			//set bounds to Texas
@@ -241,7 +268,6 @@
 				center: [-98.887939,31.821565], // starting position [lng, lat]
 				zoom: 5.5, // starting zoom
 				maxBounds: bounds // sets bounds as max
-
 			});
 
 			var originalZoomLevel = map.getZoom();
@@ -417,19 +443,6 @@
 						'scalingFactor': 0.5
 					}
 				);
-		/*
-				addPointLayer(
-					map,
-					{
-						'gusID': "1F3qjOKXsK5GTfM_f8RdoQFCJiz6QWDNOQOthJOMQB2g",
-						'sourceName': 'districts-of-innovation',
-						'layerName': 'districts-of-innovation-points',
-						'icon': 'districts_of_innovation_large',
-						'iconSize': 0.1,
-						'legendID': 'districts_of_innovation'
-					}
-				);
-		*/
 
 				addVectorLayer(
 					map,
@@ -449,39 +462,43 @@
 					}
 				);
 
-				addVectorLayer(
-					map,
-					{
-						'sourceName': 'state-senate-districts',
-						'sourceID': 'state_senate_districts-0g2odu',
-						'sourceURL': 'mapbox://core-gis.b2eu90mx',
-						'lineLayerName': 'state-senate-districts-lines',
-						'lineColor': '#a1b082',
-						'legendID': 'state_senate_districts',
-						'displayBehind': 'raising-school-leaders-points',
-						'polygonLayerName': 'state-senate-districts-poly',
-						'polygonFillColor': 'rgba(200, 100, 240, 0)',
-						'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
-						'usedInZoomControl': true
-					}
-				);
+				if (showSenateDistricts) {
+					addVectorLayer(
+						map,
+						{
+							'sourceName': 'state-senate-districts',
+							'sourceID': 'state_senate_districts-0g2odu',
+							'sourceURL': 'mapbox://core-gis.b2eu90mx',
+							'lineLayerName': 'state-senate-districts-lines',
+							'lineColor': '#a1b082',
+							'legendID': 'state_senate_districts',
+							'displayBehind': 'raising-school-leaders-points',
+							'polygonLayerName': 'state-senate-districts-poly',
+							'polygonFillColor': 'rgba(200, 100, 240, 0)',
+							'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
+							'usedInZoomControl': true
+						}
+					);
+				}
 
-				addVectorLayer(
-					map,
-					{
-						'sourceName': 'state-house-districts',
-						'sourceID': 'state_house_districts-1vl4x8',
-						'sourceURL': 'mapbox://core-gis.9drnaiu0',
-						'lineLayerName': 'state-house-districts-lines',
-						'lineColor': 'rgba(117, 137, 77, 0.5)',
-						'legendID': 'state_house_districts',
-						'displayBehind': 'raising-school-leaders-points',
-						'polygonLayerName': 'state-house-districts-poly',
-						'polygonFillColor': 'rgba(200, 100, 240, 0)',
-						'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
-						'usedInZoomControl': true
-					}
-				);
+				if (showHouseDistricts) {
+					addVectorLayer(
+						map,
+						{
+							'sourceName': 'state-house-districts',
+							'sourceID': 'state_house_districts-1vl4x8',
+							'sourceURL': 'mapbox://core-gis.9drnaiu0',
+							'lineLayerName': 'state-house-districts-lines',
+							'lineColor': 'rgba(117, 137, 77, 0.5)',
+							'legendID': 'state_house_districts',
+							'displayBehind': 'raising-school-leaders-points',
+							'polygonLayerName': 'state-house-districts-poly',
+							'polygonFillColor': 'rgba(200, 100, 240, 0)',
+							'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
+							'usedInZoomControl': true
+						}
+					);
+				}
 
 				addVectorLayer(
 					map,
