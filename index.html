@@ -190,8 +190,15 @@
 					];
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 					if (filterField !== undefined) {
-						console.log("Filtering to", filterField, coords[4]);
-
+						setTimeout(function(){
+							console.log(loadedLayers);
+							console.log("Filtering to", filterField, coords[4]);
+							var featuresInDistrict;
+							for (i in loadedLayers) {
+								console.log(loadedLayers[i]);
+								map.setFilter(loadedLayers[i], ['==', filterField, coords[4]]);
+							}
+						}, 1500);
 					}
 				}
 			}
@@ -364,7 +371,6 @@
 						},
 						params.displayBehind
 					);
-					loadedLayers.push(params.lineLayerName);
 				}
 				if ((params.polygonLayerName !== undefined) && (params.polygonLayerName !== false)) {
 					if (params.usedInZoomControl) { visibilityState = 'visible'; }
@@ -383,7 +389,6 @@
 							},
 						}
 					);
-					loadedLayers.push(params.polygonLayerName);
 				}
 			}
 
