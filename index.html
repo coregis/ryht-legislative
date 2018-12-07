@@ -85,6 +85,13 @@
 						map.moveLayer('raising-blended-learners-campuses-points', 'raising-texas-teachers-points');
 						map.moveLayer('raising-school-leaders-points', 'raising-blended-learners-points');
 						map.moveLayer('raising-school-leaders-points', 'charles-butt-scholars-points');
+						if (urlParams["showlayers"]) {
+							layersToShow = urlParams["showlayers"].split(',');
+							for (i in layersToShow) {
+								layerInfo = layersToShow[i].split('+');
+								showHideLayer(layerInfo[0], layerInfo[1], showOnly=true);
+							}
+						}
 					}, 2000);
 				}
 			}
