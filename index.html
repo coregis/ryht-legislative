@@ -70,9 +70,11 @@
 				else {
 					if (showHouseDistricts) {
 						populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
+						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-house-districts-lines');
 					}
 					if (showSenateDistricts) {
 						populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
+						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-senate-districts-lines');
 					}
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
 					setTimeout(function(){
