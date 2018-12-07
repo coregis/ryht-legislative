@@ -7,7 +7,7 @@
 	Layers are added in the map.on('load') call towards the end.
 
 	For a layer to appear in the legend, it must have a corresponding <li> in <ul class='legend-labels'>, and the id for that item has to be given to addPointLayer() or addVectorLayer() as the legendID property.
-	For a legend item to show the right icon, there must be a corresponding rule set in css/ryht-internal-style.css
+	For a legend item to show the right icon, there must be a corresponding rule set in css/ryht-legislative-style.css
 
 	For a layer to appear in the Zoom to Districts control, it must have a polygon layer (even if that's kept invisible) and have two corresponding definitions:
 		1) a <select> element defined in the section of <div id="mySidenav"> that's labelled with the comment: !--Drop down controls--
@@ -20,7 +20,7 @@
 		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
 		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
-		<link href="css/ryht-internal-style.css" rel="stylesheet" />
+		<link href="css/ryht-legislative-style.css" rel="stylesheet" />
 		<style>
 			body { margin:0; padding:0; }
 			#map { position:absolute; top:0; bottom:0; width:100%; }
@@ -31,19 +31,6 @@
 		</style>
 
 		<script>
-			// first we check for the URL parameter '?districts=senate'.  If found, we'll show state senate districts; otherwise state house
-			var urlParams = {};
-			var urlParts = window.location.href.replace(
-				/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {urlParams[key] = value;}
-			);
-			var showHouseDistricts = true;
-			var showSenateDistricts = false;
-			if (urlParams["districts"] && urlParams["districts"] === "senate") {
-				showHouseDistricts = false;
-				showSenateDistricts = true;
-			}
-			// now we can check the two showXDistricts variables anywhere that we might introduce House or Senate districts to decide which one to show
-
 			function showHideLayer(layerName, markerName) {
 				var visibility = map.getLayoutProperty(layerName, 'visibility');
 					if (visibility === 'visible') {
@@ -68,12 +55,9 @@
 					setTimeout(runWhenLoadComplete, 100);
 				}
 				else {
-					if (showHouseDistricts) {
-						populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
-					}
-					if (showSenateDistricts) {
-						populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
-					}
+					populateZoomControl("school-districts-control", "texas-school-districts", "NAME", "Texas School Districts");
+					populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
+					populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
 					setTimeout(function(){
 						map.moveLayer('raising-blended-learners-points', 'raising-family-partnerships-points');
@@ -88,98 +72,78 @@
 			}
 
 			function populateZoomControl(selectID, sourceID, fieldName, layerName) {
-				polygons = getPolygons(sourceID, fieldName);
+				polygonNames = getIDsList(sourceID, fieldName);
 				var select = document.getElementById(selectID);
 				select.options[0] = new Option(layerName);
-				for (i in polygons) {
-					select.options[select.options.length] = new Option(
-						polygons[i].name,
-						polygons[i].bbox
-					);
+				for (i in polygonNames) {
+					select.options[select.options.length] = new Option(polygonNames[i], polygonNames[i]);
 				}
 			}
 
-			function removeElement(id) {
-				var elementToRemove = document.getElementById(id);
-				if (elementToRemove) {
-					elementToRemove.parentNode.removeChild(elementToRemove);
-				}
-			}
-
-			function getPolygons(sourceID, nameField) {
+			function getIDsList(sourceID, fieldName) {
 				layerID = map.getSource(sourceID).vectorLayerIds[0];
 				features = map.querySourceFeatures(sourceID, {'sourceLayer': layerID})
-				polygons = [];
-				existingItems = [];
+				featureNames = []
 				for (i in features) {
-					existing = existingItems.indexOf(features[i].properties[nameField]);
-					if (existing > -1) {
-						polygons[existing].bbox = getFeatureBounds(
-							features[i].toJSON().geometry.coordinates,
-							polygons[existing].bbox
-						);
-					}
-					else {
-						existingItems.push(features[i].properties[nameField]);
-						polygons.push({
-							name: features[i].properties[nameField],
-							bbox: getFeatureBounds(features[i].toJSON().geometry.coordinates)
-						});
+					featureName = features[i].properties[fieldName]
+					if (typeof featureName !== undefined) {
+						if (featureNames.indexOf(featureName) < 0) {
+							featureNames.push(featureName);
+						}
 					}
 				}
-				polygons.sort(function(a, b){
-					var x = a.name;
-					var y = b.name;
-					if (x < y) {return -1;}
-					if (x > y) {return 1;}
-					return 0;
-				});
-				return polygons;
+				// if the IDs are numeric we have to make sure they get sorted as numbers not as text
+				if (typeof featureNames[0] !== undefined && !isNaN(parseFloat(featureNames[0])) && isFinite(featureNames[0])) {
+					return featureNames.sort(function(a, b){return a-b});
+				}
+				else { return featureNames.sort(); }
 			}
 
-			function getFeatureBounds(coords, startingBBOX) {
-				if (startingBBOX === undefined) {
-					minX = 180;
-					maxX = -180;
-					minY = 90;
-					maxY = -90;
-				}
-				else {
-					minX = startingBBOX[0][0];
-					maxX = startingBBOX[1][0];
-					minY = startingBBOX[0][1];
-					maxY = startingBBOX[1][1];
-				}
-				for (i in coords) {
-					// coords may be a simple array of coords, or an array of arrays if it's a multipolygon
-					for (j in coords[i]) {
-						if (!(coords[i][j][0] instanceof Array)) {
-							if (coords[i][j][0] < minX) { minX = coords[i][j][0]; }
-							if (coords[i][j][0] > maxX) { maxX = coords[i][j][0]; }
-							if (coords[i][j][1] < minY) { minY = coords[i][j][1]; }
-							if (coords[i][j][1] > maxY) { maxY = coords[i][j][1]; }
-						}
-						else {
-							for (k in coords[i][j]) {
-								if (coords[i][j][k][0] < minX) { minX = coords[i][j][k][0]; }
-								if (coords[i][j][k][0] > maxX) { maxX = coords[i][j][k][0]; }
-								if (coords[i][j][k][1] < minY) { minY = coords[i][j][k][1]; }
-								if (coords[i][j][k][1] > maxY) { maxY = coords[i][j][k][1]; }
+			function zoomToPolygon(sourceID, itemID, fieldName) {
+				// first quickly zoom out to the full layer area
+				map.fitBounds(map.getSource(sourceID).bounds, options={duration: 0});
+				// if we haven't passed in an itemID, then just stop there; otherwise continue with the zoom in
+				if (typeof itemID !== 'undefined') {
+					// use a timeout here to make sure that the zoom in doesn't try to start before the zoom out has finished
+					setTimeout(
+						function(){
+							layerBounds = map.getSource(sourceID).bounds;
+							layerID = map.getSource(sourceID).vectorLayerIds[0];
+							features = map.querySourceFeatures(sourceID, {'sourceLayer': layerID})
+							minX = layerBounds[2];
+							maxX = layerBounds[0];
+							minY = layerBounds[3];
+							maxY = layerBounds[1];
+							// then step through features - first to find the item we want
+							for (i in features) {
+								if (features[i].properties[fieldName] == itemID) {
+									coords = features[i].toJSON().geometry.coordinates;
+									for (j in coords) {
+										// then the coords returned may be a simple array of coords, or an array of arrays if it's a multipolygon
+										for (k in coords[j]) {
+											if (!(coords[j][k][0] instanceof Array)) {
+												if (coords[j][k][0] < minX) { minX = coords[j][k][0]; }
+												if (coords[j][k][0] > maxX) { maxX = coords[j][k][0]; }
+												if (coords[j][k][1] < minY) { minY = coords[j][k][1]; }
+												if (coords[j][k][1] > maxY) { maxY = coords[j][k][1]; }
+											}
+											else {
+												for (l in coords[j][k]) {
+													if (coords[j][k][l][0] < minX) { minX = coords[j][k][l][0]; }
+													if (coords[j][k][l][0] > maxX) { maxX = coords[j][k][l][0]; }
+													if (coords[j][k][l][1] < minY) { minY = coords[j][k][l][1]; }
+													if (coords[j][k][l][1] > maxY) { maxY = coords[j][k][l][1]; }
+												}
+											}
+										}
+									}
+								}
 							}
-						}
-					}
-				}
-				return [[minX, minY], [maxX, maxY]];
-			}
-
-			function zoomToPolygon(sourceID, coords) {
-				if (typeof coords !== 'undefined') {
-					coords = coords.split(",");
-					bbox = [
-						[coords[0], coords[1]],
-						[coords[2], coords[3]]
-					];
-					map.fitBounds(bbox, options={padding: 10, duration: 3000});
+							// having found the bounds, the rest is easy
+							map.fitBounds([[minX, minY], [maxX, maxY]], options={padding: 10});
+						},
+						100
+					); // end of setTimeout block
 				}
 			}
 		</script>
@@ -187,7 +151,7 @@
 
 	<body>
 
-	<!--BEGIN FLYOUT FOR 'ZOOM TO LAYERS'-->
+<!--BEGIN FLYOUT FOR 'ZOOM TO LAYERS'-->
 
 		<div id="mySidenav" class="sidenav">
 			<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -200,11 +164,40 @@
 
 				<!--Drop down controls-->
 
-				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value);"></select>
-				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value);"></select>
-
+				<select id="school-districts-control" onchange="zoomToPolygon('texas-school-districts', this.value, 'NAME');"></select>
 				<br /><br />
-				Map produced by <a href="http://www.coregis.net/" target="_blank">CoreGIS</a>.
+				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'District');"></select>
+				<br /><br />
+				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'District');"></select>
+				
+				<!--Program logos and descriptions-->
+				
+				<p class="programs">
+					<img src="images/rbl_logo.png">
+					<br>
+					<a href="https://www.raiseyourhandtexas.org/foundation/blended/" class="programlink">Raising Blended Learners</a>  is a pilot instructional program that uses both online and brick-and-mortar strategies to create and scale a more student-centered approach to instruction in Texas. Five demonstration sites will receive up to $500,000 to implement programs. In addition, 15 districts selected as pilot networks have received implementation support.
+					
+					<br><br>
+					
+					<img src="images/rtt_logo.png">
+					<br>
+					<a href="https://www.raiseyourhandtexas.org/foundation/raising-texas-teachers/" class="programlink">Raising Texas Teachers</a> is a $50 million investment over the next 10 years toward elevating the teaching profession in Texas. The program will provide $8,000 per student per year in scholarship funding for students committed to a career in teaching, in addition to technical support at 10 premier teacher preparation programs across the state. Over time, the scholarship program will grow to include 500 fellows annually.
+
+					<br><br>
+					
+					<img src="images/rsl_logo.png">
+					<br>
+					Through <a href="https://www.raiseyourhandtexas.org/foundation/raising-school-leaders/" class="programlink">Raising School Leaders</a>, Raise Your Hand Texas and the Raise Your Hand Texas Foundation have sent more than 1,000 school principals, school district teams, and other public education stakeholders to leadership development and coaching programs at Harvard University and other colleges and education organizations across the country. To date, our total investment in the program has exceeded +$15 million.
+					
+					<br><br>					
+					
+					<img src="images/rfp_logo.png">
+					<br>
+					<a href="https://www.raiseyourhandtexas.org/foundation/raising-family-partnerships/" class="programlink">Raising Family Partnerships</a> is a year-long fellowship for public school principals and their leadership teams to redesign how families, schools, and communities collaborate to improve student outcomes. To date, Raise Your Hand has invested +$300,000 in helping fellows build capacity and scale a framework for better partnerships between educators and families.
+					
+					</p>
+				
+				<p class="moreinfo">Map produced by <a href="http://www.coregis.net/" target="_blank">CoreGIS</a>.
 				<br /><br />
 				<a href="https://www.raiseyourhandtexas.org/" target="_blank">Raise Your Hand Texas</a>
 				<br />
@@ -244,10 +237,14 @@
 						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
 						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Raising Texas Teachers</li>
 						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
+		<!--
+						<li onClick="showHideLayer('districts-of-innovation-points', markerName='districts_of_innovation');"><span id="districts_of_innovation" class="inactive"></span>Districts of Innovation</li>
+		-->
 						<li onClick="showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li onClick="showHideLayer('districts-of-innovation-poly-fill', markerName='districts_of_innovation_poly');"><span id="districts_of_innovation_poly" class="inactive"></span>Districts of Innovation</li>
-						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
-						<li id="senate_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
+						<li onClick="showHideLayer('texas-school-districts-lines', markerName='texas_school_districts');"><span id="texas_school_districts" class="inactive"></span>Texas School Districts</li>
+						<li onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
+						<li onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
 					</ul>
 				</div>
 				<div class='legend-source'>Source: <a href="https://www.raiseyourhandtexas.org/" target="_blank">Raise Your Hand Texas</a></div>
@@ -256,18 +253,6 @@
 		</div>
 
 		<script>
-			// make appropriate legend entry visible, and remove whichever zoom-to-districts dropdown we're not going to be using
-			if (showHouseDistricts) {
-				document.getElementById("house_districts_legend_entry").style.display = "inline";
-			} else {
-				removeElement("house-districts-control"); // the dropdown menu
-			}
-			if (showSenateDistricts) {
-				document.getElementById("senate_districts_legend_entry").style.display = "inline";
-			} else {
-				removeElement("senate-districts-control");
-			}
-
 			mapboxgl.accessToken = 'pk.eyJ1IjoiY29yZS1naXMiLCJhIjoiaUxqQS1zQSJ9.mDT5nb8l_dWIHzbnOTebcQ';
 
 			//set bounds to Texas
@@ -282,6 +267,7 @@
 				center: [-98.887939,31.821565], // starting position [lng, lat]
 				zoom: 5.5, // starting zoom
 				maxBounds: bounds // sets bounds as max
+
 			});
 
 			var originalZoomLevel = map.getZoom();
@@ -457,45 +443,71 @@
 						'scalingFactor': 0.5
 					}
 				);
+		/*
+				addPointLayer(
+					map,
+					{
+						'gusID': "1F3qjOKXsK5GTfM_f8RdoQFCJiz6QWDNOQOthJOMQB2g",
+						'sourceName': 'districts-of-innovation',
+						'layerName': 'districts-of-innovation-points',
+						'icon': 'districts_of_innovation_large',
+						'iconSize': 0.1,
+						'legendID': 'districts_of_innovation'
+					}
+				);
+		*/
 
-				if (showSenateDistricts) {
-					addVectorLayer(
-						map,
-						{
-							'sourceName': 'state-senate-districts', // data source name for internal use
-							'sourceID': 'state_senate_districts-0g2odu', // name of the Mapbox layer from which the data will be loaded
-							'sourceURL': 'mapbox://core-gis.b2eu90mx', // Mapbox URL
-							'lineLayerName': 'state-senate-districts-lines', // OPTIONAL name we'll use for the layer that shows the outlines. Leave out or set to false if you don't want outlines displayed.
-							'lineColor': '#a1b082', // colour to draw those outlines with; safe to leave out if we're not drawing outlines, but must be explicitly set if we are
-							'legendID': 'state_senate_districts', // OPTIONAL: the id in the legend, so we can set it to active or inactive as appropriate. Simply leave out for layers that don't appear in the legend
-							'displayBehind': 'raising-school-leaders-points', // ID of another existing layer, which Mapbox will make sure this one gets drawn behind
-							'polygonLayerName': 'state-senate-districts-poly', // OPTIONAL name we'll use for the layer that invisibly stores the polygon extents. Needed if we're either going to add this layer to either the zoom to districts control or set click events (e.g. popups) on it.	Leave out or set to false if you don't want one.
-							'polygonFillColor': 'rgba(200, 100, 240, 0)', // colour to fill polygons with. Needed if there's going to be a polygon layer; simply leave out if not.
-							'polygonOutlineColor': 'rgba(200, 100, 240, 0)', // colour to draw polygon boundaries with. Needed if there's going to be a polygon layer; simply leave out if not.
-							'visibleOnLoad': false, // set this optional argument to true to have the layer visible on load. Leave out or set to false to have it hidden on load
-							'usedInZoomControl': true // set this optional argument to true if this layer will be used in the Zoom to Districts control, otherwise leave it out or set it to false.
-						}
-					);
-				}
+				addVectorLayer(
+					map,
+					{
+						'sourceName': 'texas-school-districts', // data source name for internal use
+						'sourceID': 'texas_school_districts_v2', // name of the Mapbox layer from which the data will be loaded
+						'sourceURL': 'mapbox://core-gis.e4af0de1', // Mapbox URL
+						'lineLayerName': 'texas-school-districts-lines', // OPTIONAL name we'll use for the layer that shows the outlines. Leave out or set to false if you don't want outlines displayed.
+						'lineColor': '#a1b082', // colour to draw those outlines with; safe to leave out if we're not drawing outlines, but must be explicitly set if we are
+						'legendID': 'texas_school_districts', // OPTIONAL: the id in the legend, so we can set it to active or inactive as appropriate. Simply leave out for layers that don't appear in the legend
+						'displayBehind': 'country-label-sm', // ID of another existing layer, which Mapbox will make sure this one gets drawn behind
+						'polygonLayerName': 'texas-school-districts-poly', // OPTIONAL name we'll use for the layer that invisibly stores the polygon extents. Needed if we're either going to add this layer to either the zoom to districts control or set click events (e.g. popups) on it.	Leave out or set to false if you don't want one.
+						'polygonFillColor': 'rgba(200, 100, 240, 0)', // colour to fill polygons with. Needed if there's going to be a polygon layer; simply leave out if not.
+						'polygonOutlineColor': 'rgba(200, 100, 240, 0)', // colour to draw polygon boundaries with. Needed if there's going to be a polygon layer; simply leave out if not.
+						'visibleOnLoad': false, // set this optional argument to true to have the layer visible on load. Leave out or set to false to have it hidden on load
+						'usedInZoomControl': true // set this optional argument to true if this layer will be used in the Zoom to Districts control, otherwise leave it out or set it to false.
+					}
+				);
 
-				if (showHouseDistricts) {
-					addVectorLayer(
-						map,
-						{
-							'sourceName': 'state-house-districts',
-							'sourceID': 'state_house_districts-1vl4x8',
-							'sourceURL': 'mapbox://core-gis.9drnaiu0',
-							'lineLayerName': 'state-house-districts-lines',
-							'lineColor': 'rgba(117, 137, 77, 0.5)',
-							'legendID': 'state_house_districts',
-							'displayBehind': 'raising-school-leaders-points',
-							'polygonLayerName': 'state-house-districts-poly',
-							'polygonFillColor': 'rgba(200, 100, 240, 0)',
-							'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
-							'usedInZoomControl': true
-						}
-					);
-				}
+				addVectorLayer(
+					map,
+					{
+						'sourceName': 'state-senate-districts',
+						'sourceID': 'state_senate_districts-0g2odu',
+						'sourceURL': 'mapbox://core-gis.b2eu90mx',
+						'lineLayerName': 'state-senate-districts-lines',
+						'lineColor': '#a1b082',
+						'legendID': 'state_senate_districts',
+						'displayBehind': 'raising-school-leaders-points',
+						'polygonLayerName': 'state-senate-districts-poly',
+						'polygonFillColor': 'rgba(200, 100, 240, 0)',
+						'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
+						'usedInZoomControl': true
+					}
+				);
+
+				addVectorLayer(
+					map,
+					{
+						'sourceName': 'state-house-districts',
+						'sourceID': 'state_house_districts-1vl4x8',
+						'sourceURL': 'mapbox://core-gis.9drnaiu0',
+						'lineLayerName': 'state-house-districts-lines',
+						'lineColor': 'rgba(117, 137, 77, 0.5)',
+						'legendID': 'state_house_districts',
+						'displayBehind': 'raising-school-leaders-points',
+						'polygonLayerName': 'state-house-districts-poly',
+						'polygonFillColor': 'rgba(200, 100, 240, 0)',
+						'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
+						'usedInZoomControl': true
+					}
+				);
 
 				addVectorLayer(
 					map,
