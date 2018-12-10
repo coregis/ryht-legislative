@@ -76,11 +76,11 @@
 					}
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
 					setTimeout(function(){
-						map.moveLayer('raising-blended-learners-points', 'raising-family-partnerships-points');
+						map.moveLayer('raising-blended-learners-campuses-points', 'raising-family-partnerships-points');
 						map.moveLayer('charles-butt-scholars-points', 'raising-family-partnerships-points');
 						map.moveLayer('raising-school-leaders-points', 'raising-family-partnerships-points');
 						map.moveLayer('charles-butt-scholars-points', 'raising-texas-teachers-points');
-						map.moveLayer('raising-blended-learners-points', 'raising-texas-teachers-points');
+						map.moveLayer('raising-blended-learners-campuses-points', 'raising-texas-teachers-points');
 						map.moveLayer('raising-school-leaders-points', 'raising-blended-learners-points');
 						map.moveLayer('raising-school-leaders-points', 'charles-butt-scholars-points');
 					}, 2000);
@@ -238,14 +238,12 @@
 			<div class='legend-title'>Click on a layer name below to toggle its visibility</div>
 				<div class='legend-scale'>
 					<ul class='legend-labels'>
-						<li onClick="showHideLayer('raising-blended-learners-points', markerName='raising_blended_learners');"><span id="raising_blended_learners" class="inactive"></span>Raising Blended Learners Semi-Finalists</li>
-						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
+						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
 						<li onClick="showHideLayer('raising-family-partnerships-points', markerName='raising_family_partnerships');"><span id="raising_family_partnerships" class="inactive"></span>Raising Family Partnerships</li>
 						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
 						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Raising Texas Teachers</li>
 						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
-						<li onClick="showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
-						<li onClick="showHideLayer('districts-of-innovation-poly-fill', markerName='districts_of_innovation_poly');"><span id="districts_of_innovation_poly" class="inactive"></span>Districts of Innovation</li>
+						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
 						<li id="senate_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
 					</ul>
@@ -400,18 +398,6 @@
 				addPointLayer(
 					map,
 					{
-						'gusID': '1zzDxER2Ef2qMmUg4Ff4zWXoPMQh1RpK4TAueCWqQixE',
-						'sourceName': 'raising-blended-learners',
-						'layerName': 'raising-blended-learners-points',
-						'icon': 'raising_blended_learners_large',
-						'iconSize': 0.1,
-						'legendID': 'raising_blended_learners'
-					}
-				);
-
-				addPointLayer(
-					map,
-					{
 						'gusID': '1yIR3n3a7RBNlKzwU7nQsWQAPJORms_o4lmRKoST5RWU',
 						'sourceName': 'raising-blended-learners-campuses',
 						'layerName': 'raising-blended-learners-campuses-points',
@@ -496,20 +482,6 @@
 						}
 					);
 				}
-
-				addVectorLayer(
-					map,
-					{
-						'sourceName': 'districts-of-innovation-poly',
-						'sourceID': 'districts_of_innovation_poly_v1',
-						'sourceURL': 'mapbox://core-gis.97b01c24',
-						'legendID': 'districts_of_innovation_poly',
-						'displayBehind': 'raising-blended-learners-districts',
-						'polygonLayerName': 'districts-of-innovation-poly-fill',
-						'polygonFillColor': 'rgba(65, 182, 230, 100)',
-						'polygonOutlineColor': 'rgba(42, 123, 156, 100)'
-					}
-				);
 
 				addVectorLayer(
 					map,
