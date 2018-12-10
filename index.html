@@ -44,9 +44,9 @@
 			}
 			// now we can check the two showXDistricts variables anywhere that we might introduce House or Senate districts to decide which one to show
 
-			function showHideLayer(layerName, markerName) {
+			function showHideLayer(layerName, markerName, showOnly=false, hideOnly=false) {
 				var visibility = map.getLayoutProperty(layerName, 'visibility');
-					if (visibility === 'visible') {
+					if ((visibility === 'visible' || hideOnly) && !showOnly) {
 						map.setLayoutProperty(layerName, 'visibility', 'none');
 						this.className = '';
 					document.getElementById(markerName).classList.add('inactive');
@@ -60,7 +60,7 @@
 	//These are the four functions written by Eldan that power the zoom-to-district feature
 	// runWhenLoadComplete() checks if the map has finished loading data, and once it has then it calls the next one.
 	//populateZoomControl() fills the dropdowns with options generated from reading the data layers for all the district names.
-	//getIDsList() does the actual work of fetching the district names
+	//getPolygons() does the actual work of fetching the district names
 	//zoomToPolygon() zooms the map to the district extent
 
 			function runWhenLoadComplete() {
@@ -70,9 +70,11 @@
 				else {
 					if (showHouseDistricts) {
 						populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
+						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-house-districts-lines');
 					}
 					if (showSenateDistricts) {
 						populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
+						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-senate-districts-lines');
 					}
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
 					setTimeout(function(){
@@ -94,10 +96,16 @@
 				for (i in polygons) {
 					select.options[select.options.length] = new Option(
 						polygons[i].name,
-						polygons[i].bbox
+						polygons[i].bbox.toString() + ',' + polygons[i].name
 					);
 					if (urlParams["zoomto"] && urlParams["zoomto"].toString() === polygons[i].name.toString()) {
-						zoomToPolygon(sourceID, polygons[i].bbox.toString());
+						if (showHouseDistricts) {
+							zoomToPolygon(sourceID, polygons[i].bbox.toString() + ',' + polygons[i].name, 'house_dist');
+							showHideLayer('state-house-districts-lines', markerName='state_house_districts', showOnly=true);
+						} else if (showSenateDistricts) {
+							zoomToPolygon(sourceID, polygons[i].bbox.toString() + ',' + polygons[i].name, 'senate_dist');
+							showHideLayer('state-senate-districts-lines', markerName='state_senate_districts', showOnly=true);
+						}
 					}
 				}
 			}
@@ -175,7 +183,7 @@
 				return [[minX, minY], [maxX, maxY]];
 			}
 
-			function zoomToPolygon(sourceID, coords) {
+			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
 					coords = coords.split(",");
 					bbox = [
@@ -183,6 +191,18 @@
 						[coords[2], coords[3]]
 					];
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
+					if (filterField !== undefined) {
+						setTimeout(function(){
+//							console.log("Filtering to", filterField, '==', coords[4]);
+							var featuresInDistrict;
+							for (i in loadedPointLayers) {
+								map.setFilter(
+									loadedPointLayers[i],
+									['==', filterField, coords[4]]
+								);
+							}
+						}, 1500);
+					}
 				}
 			}
 		</script>
@@ -203,8 +223,8 @@
 
 				<!--Drop down controls-->
 
-				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value);"></select>
-				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value);"></select>
+				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'house_dist');"></select>
+				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'senate_dist');"></select>
 
 				<br /><br />
 				Map produced by <a href="http://www.coregis.net/" target="_blank">CoreGIS</a>.
@@ -287,6 +307,8 @@
 
 			var originalZoomLevel = map.getZoom();
 
+			var loadedPointLayers = [];
+
 			function setVisibilityState(params) {
 				if ((params.visibleOnLoad === undefined) || (params.visibleOnLoad === false)) {
 					if ((params.legendID !== undefined) && (params.legendID !== false)) {
@@ -323,6 +345,7 @@
 					map.on("zoomend", function(){
 						map.setLayoutProperty(params.layerName, 'icon-size', (1 + (map.getZoom() / originalZoomLevel - 1) * params.scalingFactor) * params.iconSize);
 					});
+					loadedPointLayers.push(params.layerName);
 				});
 			}
 
@@ -516,7 +539,6 @@
 				);
 
 				runWhenLoadComplete();
-
 			});
 
 		// This is the popup for the merged boundary layers
