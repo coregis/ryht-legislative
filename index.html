@@ -7,7 +7,7 @@
 	Layers are added in the map.on('load') call towards the end.
 
 	For a layer to appear in the legend, it must have a corresponding <li> in <ul class='legend-labels'>, and the id for that item has to be given to addPointLayer() or addVectorLayer() as the legendID property.
-	For a legend item to show the right icon, there must be a corresponding rule set in css/ryht-internal-style.css
+	For a legend item to show the right icon, there must be a corresponding rule set in css/ryht-legislative-style.css
 
 	For a layer to appear in the Zoom to Districts control, it must have a polygon layer (even if that's kept invisible) and have two corresponding definitions:
 		1) a <select> element defined in the section of <div id="mySidenav"> that's labelled with the comment: !--Drop down controls--
@@ -20,7 +20,7 @@
 		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
 		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
-		<link href="css/ryht-internal-style.css" rel="stylesheet" />
+		<link href="css/ryht-legislative-style.css" rel="stylesheet" />
 		<style>
 			body { margin:0; padding:0; }
 			#map { position:absolute; top:0; bottom:0; width:100%; }
@@ -225,15 +225,46 @@
 
 				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'house_dist');"></select>
 				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'senate_dist');"></select>
+			</p>
 
-				<br /><br />
-				Map produced by <a href="http://www.coregis.net/" target="_blank">CoreGIS</a>.
+			<!--Program logos and descriptions-->
+
+			<br />
+
+			<img src="images/rbl_logo_sidenav.png" />
+			<button class="collapsible">Read more...</button>
+			<div class="content">
+				<p class="programs">
+					<a href="https://www.raiseyourhandtexas.org/foundation/blended/" class="programlink">Raising Blended Learners</a>  is a pilot instructional program that uses both online and brick-and-mortar strategies to create and scale a more student-centered approach to instruction in Texas. Five demonstration sites will receive up to $500,000 to implement programs. In addition, 15 districts selected as pilot networks have received implementation support.
+				</p>
+			</div>
+
+			<img src="images/rtt_logo_sidenav.png" />
+			<button class="collapsible">Read more...</button>
+			<div class="content">
+			 <p class="programs"><a href="https://www.raiseyourhandtexas.org/foundation/raising-texas-teachers/" class="programlink">Raising Texas Teachers</a> is a $50 million investment over the next 10 years toward elevating the teaching profession in Texas. The program will provide $8,000 per student per year in scholarship funding for students committed to a career in teaching, in addition to technical support at 10 premier teacher preparation programs across the state. Over time, the scholarship program will grow to include 500 fellows annually.</p>
+			</div>
+
+			<img src="images/rsl_logo_sidenav.png" />
+			<button class="collapsible">Read more...</button>
+			<div class="content">
+				<p class="programs">Through <a href="https://www.raiseyourhandtexas.org/foundation/raising-school-leaders/" class="programlink">Raising School Leaders</a>, Raise Your Hand Texas and the Raise Your Hand Texas Foundation have sent more than 1,000 school principals, school district teams, and other public education stakeholders to leadership development and coaching programs at Harvard University and other colleges and education organizations across the country. To date, our total investment in the program has exceeded +$15 million.</p>
+			</div>
+
+			<img src="images/rfp_logo_sidenav.png" />
+			<button class="collapsible">Read more...</button>
+			<div class="content">
+			 <p class="programs"><a href="https://www.raiseyourhandtexas.org/foundation/raising-family-partnerships/" class="programlink">Raising Family Partnerships</a> is a year-long fellowship for public school principals and their leadership teams to redesign how families, schools, and communities collaborate to improve student outcomes. To date, Raise Your Hand has invested +$300,000 in helping fellows build capacity and scale a framework for better partnerships between educators and families.</p>
+			</div>
+
+
+			<p class="moreinfo">Map produced by <a href="http://www.coregis.net/" target="_blank">CoreGIS</a>.
 				<br /><br />
 				<a href="https://www.raiseyourhandtexas.org/" target="_blank">Raise Your Hand Texas</a>
 				<br />
 				<a href="https://www.raiseyourhandtexas.org/contact/" target="_blank">Contact</a>
 			</p>
-		</div>
+		</div> <!-- end of div id="mySidenav" class="sidenav" -->
 
 		<div id="main">
 
@@ -242,6 +273,21 @@
 		</div>
 
 		<script>
+			var coll = document.getElementsByClassName("collapsible");
+			var i;
+
+			for (i = 0; i < coll.length; i++) {
+			  coll[i].addEventListener("click", function() {
+					this.classList.toggle("active");
+					var content = this.nextElementSibling;
+					if (content.style.maxHeight) {
+						content.style.maxHeight = null;
+					} else {
+						content.style.maxHeight = content.scrollHeight + "px";
+					}
+			  });
+			}
+
 			function openNav() {
 				document.getElementById("mySidenav").style.width = "300px";
 				document.getElementById("main").style.marginLeft = "300px";
@@ -257,8 +303,8 @@
 
 		<div id='map'></div>
 
-		<div class='legend'>
-			<div class='legend-title'>Click on a layer name below to toggle its visibility</div>
+			<div class='legend'>
+				<div class='legend-title'>Click on a layer name below to toggle its visibility</div>
 				<div class='legend-scale'>
 					<ul class='legend-labels'>
 						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
@@ -270,11 +316,11 @@
 						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
 						<li id="senate_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
 					</ul>
-				</div>
+				</div> <!-- end of div class='legend-scale' -->
 				<div class='legend-source'>Source: <a href="https://www.raiseyourhandtexas.org/" target="_blank">Raise Your Hand Texas</a></div>
 				<div class='map-credit'>Map design by <a href="http://www.coregis.net/" target="_blank">CORE GIS</a></div>
-			</div>
-		</div>
+			</div> <!-- end of div id="legend" -->
+		</div> <!-- end of div id="main" -->
 
 		<script>
 			// make appropriate legend entry visible, and remove whichever zoom-to-districts dropdown we're not going to be using
