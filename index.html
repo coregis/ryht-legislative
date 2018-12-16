@@ -312,9 +312,10 @@
 					<li>Raising Blended Learners:  <span class="count.rbl">X</span></li>
 					<li>Raising Family Partnerships: <span class="count.rfp">X</span></li>
 					<li>Charles Butt Scholars: <span class="count.cbs">X</span></li>
-					<li>Raising Texas Teachers: <span class="count.rtt">X</span></li>		
-					<li>Raising School Learners: <span class="count.rsl">X</span></li>
 					<li>Institutes of Higher Education: <span class="count.ihe">X</span></li>
+					<li>Raising School Leaders: <span class="count.rsl">X</span></li>
+
+					
 				</ul>	
 			</div>
 			</div>
@@ -334,7 +335,7 @@
 						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
 						<li onClick="showHideLayer('raising-family-partnerships-points', markerName='raising_family_partnerships');"><span id="raising_family_partnerships" class="inactive"></span>Raising Family Partnerships</li>
 						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
-						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Raising Texas Teachers</li>
+						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Institutes of Higher Education</li>
 						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
 						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
@@ -611,39 +612,157 @@
 				runWhenLoadComplete();
 			});
 
-		// This is the popup for the merged boundary layers
-		// When a click event occurs on a feature in the unioned districts layer, open a popup at the
-		// location of the click, with description HTML from its properties.
-			map.on('click', 'school_house_senate_districts_UNION-poly', function (e) {
+		/* 
+		
+			*****************************************************
+			These are the popups for the point layers
+			When a click event occurs on a feature in the point layer, open a popup at 
+			the location of the click, with description HTML from its properties 
+			*****************************************************	
+		*/
+		
+		//raising blended learners campuses popup
+			map.on('click', 'raising-blended-learners-campuses-points', function (e) {
 				new mapboxgl.Popup()
 					.setLngLat(e.lngLat)
-					.setHTML(fillpopup(e.features[0].properties))
+					.setHTML(fillpopup_rbl(e.features[0].properties))
 					.addTo(map);
 			});
 
-			 // Change the cursor to a pointer when the mouse is over the house districts layer.
-				map.on('mouseenter', 'school_house_senate_districts_UNION-poly', function () {
+			 // Change the cursor to a pointer when the mouse is over the points layer.
+				map.on('mouseenter', 'raising-blended-learners-campuses-points', function () {
 					map.getCanvas().style.cursor = 'pointer';
 				});
 
 				// Change it back to a pointer when it leaves.
-				map.on('mouseleave', 'school_house_senate_districts_UNION-poly', function () {
+				map.on('mouseleave', 'raising-blended-learners-campuses-points', function () {
 					map.getCanvas().style.cursor = '';
 				});
 
-			function fillpopup(data){
+			function fillpopup_rbl(data){
 				var html = "";
-				html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + data.SchDistNam + "</span>";
+				html = html + "<span class='varname'>School: </span> <span class='attribute'>" + data.school + "</span>";
 				html = html + "<br />"
-				html = html + "<span class='varname'>House District: </span> <span class='attribute'>" + data.HseDistNum + "</span>";
+				html = html + "<span class='varname'>Grades: </span> <span class='attribute'>" + data.grades + "</span>";
 				html = html + "<br />"
-				html = html + "<span class='varname'>Senate District: </span> <span class='attribute'>" + data.SenDistNum + "</span>";
+				html = html + "<span class='varname'>Subjects: </span> <span class='attribute'>" + data.subjects + "</span>";
+				return html;
+				//this will return the string to the calling function
+
+			}		
+			
+		//raising family partnerships popup
+			map.on('click', 'raising-family-partnerships-points', function (e) {
+				new mapboxgl.Popup()
+					.setLngLat(e.lngLat)
+					.setHTML(fillpopup_rfp(e.features[0].properties))
+					.addTo(map);
+			});
+
+			 // Change the cursor to a pointer when the mouse is over the points layer.
+				map.on('mouseenter', 'raising-family-partnerships-points', function () {
+					map.getCanvas().style.cursor = 'pointer';
+				});
+
+				// Change it back to a pointer when it leaves.
+				map.on('mouseleave', 'raising-family-partnerships-points', function () {
+					map.getCanvas().style.cursor = '';
+				});
+
+			function fillpopup_rfp(data){
+				var html_rfp = "";
+				html_rfp = html_rfp + "<span class='varname'>School: </span> <span class='attribute'>" + data.account_name + "</span>";
+				return html_rfp;
+				//this will return the string to the calling function
+
+			}			
+			
+		//charles butt scholars popup
+			map.on('click', 'charles-butt-scholars-points', function (e) {
+				new mapboxgl.Popup()
+					.setLngLat(e.lngLat)
+					.setHTML(fillpopup_cbs(e.features[0].properties))
+					.addTo(map);
+			});
+
+			 // Change the cursor to a pointer when the mouse is over the points layer.
+				map.on('mouseenter', 'charles-butt-scholars-points', function () {
+					map.getCanvas().style.cursor = 'pointer';
+				});
+
+				// Change it back to a pointer when it leaves.
+				map.on('mouseleave', 'charles-butt-scholars-points', function () {
+					map.getCanvas().style.cursor = '';
+				});
+
+			function fillpopup_cbs(data){
+				var html = "";
+				html = html + "<span class='varname'>Scholar's Name: </span> <span class='attribute'>" + data.full_name + "</span>";
+				html = html + "<br />"
+				html = html + "<span class='attribute'>" + '<a href="' + data.cb_scholar_url + '">' + data.link + '</a>'+"</span>";
+				return html;
+				//this will return the string to the calling function
+
+			}			
+		
+		//institutes for higher education popup
+			map.on('click', 'raising-texas-teachers-points', function (e) {
+				new mapboxgl.Popup()
+					.setLngLat(e.lngLat)
+					.setHTML(fillpopup_rtt(e.features[0].properties))
+					.addTo(map);
+			});
+
+			 // Change the cursor to a pointer when the mouse is over the points layer.
+				map.on('mouseenter', 'raising-texas-teachers-points', function () {
+					map.getCanvas().style.cursor = 'pointer';
+				});
+
+				// Change it back to a pointer when it leaves.
+				map.on('mouseleave', 'raising-texas-teachers-points', function () {
+					map.getCanvas().style.cursor = '';
+				});
+
+			function fillpopup_rtt(data){
+				var html = "";
+				html = html + "<span class='varname'>Institute: </span> <span class='attribute'>" + data.account_name + "</span>";
 				return html;
 				//this will return the string to the calling function
 
 			}
 
+			
+		//raising school leaders popup
+			map.on('click', 'raising-school-leaders-points', function (e) {
+				new mapboxgl.Popup()
+					.setLngLat(e.lngLat)
+					.setHTML(fillpopup_rsl(e.features[0].properties))
+					.addTo(map);
+			});
 
+			 // Change the cursor to a pointer when the mouse is over the points layer.
+				map.on('mouseenter', 'raising-school-leaders-points', function () {
+					map.getCanvas().style.cursor = 'pointer';
+				});
+
+				// Change it back to a pointer when it leaves.
+				map.on('mouseleave', 'raising-school-leaders-points', function () {
+					map.getCanvas().style.cursor = '';
+				});
+
+			function fillpopup_rsl(data){
+				var html = "";
+				html = html + "<span class='varname'>Institute: </span> <span class='attribute'>" + data.institute + "</span>";
+				html = html + "<br />"
+				html = html + "<span class='varname'>Campus: </span> <span class='attribute'>" + data.campus + "</span>";
+				html = html + "<br />"
+				html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + data.district + "</span>";
+				return html;
+				//this will return the string to the calling function
+
+			}
+
+		//****************END POP UPS****************
 
 			function fetchJSONFile(path, callback) {
 				var httpRequest = new XMLHttpRequest();
@@ -658,6 +777,8 @@
 				httpRequest.open('GET', path);
 				httpRequest.send();
 			}
+			
+			
 
 			function gus_api(id, callback) {
 				const url = `https://spreadsheets.google.com/feeds/cells/${id}/od6/public/basic?alt=json`;
