@@ -196,9 +196,11 @@
 							console.log("Filtering", sourceID,  "to", filterField, '==', coords[4]);
 							for (i in loadedPointLayers) {
 								map.setFilter(
-									loadedPointLayers[i],
+									loadedPointLayers[i][0],
 									['==', filterField, coords[4]]
 								);
+							showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
+//							console.log(loadedPointLayers[i], map.queryRenderedFeatures({layers:[loadedPointLayers[i]]}));
 							}
 						}, 1500);
 					}
@@ -413,7 +415,7 @@
 					map.on("zoomend", function(){
 						map.setLayoutProperty(params.layerName, 'icon-size', (1 + (map.getZoom() / originalZoomLevel - 1) * params.scalingFactor) * params.iconSize);
 					});
-					loadedPointLayers.push(params.layerName);
+					loadedPointLayers.push([params.layerName, params.legendID]);
 				});
 			}
 
