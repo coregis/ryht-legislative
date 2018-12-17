@@ -218,6 +218,17 @@
 						setTimeout(function(){
 							for (i in loadedPolygonLayers) {
 								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
+								if (
+									(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
+									||
+									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
+								) {
+									console.log(loadedPolygonLayers[i], coords[4], map.queryRenderedFeatures( { layers:[loadedPolygonLayers[i][0]] } ));
+									map.setFilter(
+										loadedPolygonLayers[i][0],
+										['!=', 'District', coords[4]]
+									);
+								}
 							}
 							for (i in loadedPointLayers) {
 								map.setFilter(
