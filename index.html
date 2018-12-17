@@ -198,8 +198,6 @@
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 					if (filterField !== undefined) {
 						setTimeout(function(){
-//							console.log("Filtering", sourceID,  "to", filterField, '==', coords[4]);
-//							console.log(loadedPolygonLayers);
 							for (i in loadedPolygonLayers) {
 								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
 							}
@@ -209,7 +207,6 @@
 									['==', filterField, coords[4]]
 								);
 								showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
-//							console.log(loadedPointLayers[i], map.queryRenderedFeatures({layers:[loadedPointLayers[i]]}));
 							}
 						}, 1500);
 					}
