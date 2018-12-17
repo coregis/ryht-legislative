@@ -42,8 +42,11 @@
 				(urlParams["districts"] && urlParams["districts"].toLowerCase().indexOf("sen") > -1) ||
 				(urlParams["display"] && urlParams["display"].toLowerCase().indexOf("sen") > -1) ||
 				(urlParams["Districts"] && urlParams["Districts"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["Display"] && urlParams["Display"].toLowerCase().indexOf("sen") > -1)
-			) {
+				(urlParams["Display"] && urlParams["Display"].toLowerCase().indexOf("sen") > -1) ||
+				(urlParams["districts"] && urlParams["districts"].toLowerCase() === 's') ||
+				(urlParams["display"] && urlParams["display"].toLowerCase() === 's') ||
+				(urlParams["Districts"] && urlParams["Districts"].toLowerCase() === 's') ||
+				(urlParams["Display"] && urlParams["Display"].toLowerCase() === 's')			) {
 				showHouseDistricts = false;
 				showSenateDistricts = true;
 			}
