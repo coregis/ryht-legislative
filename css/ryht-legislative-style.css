@@ -65,48 +65,41 @@ img {
 	overflow: hidden; /*planning ahead to clear floats*/
 }
 
-.legend {
-	background-color: #ffffff;
-	opacity:.8;
-	border: 1px solid #989797;
+.legend, .stats {
+	background-color: rgba(255, 255, 255, 0.7);
+	border: 1px solid rgba(190, 188, 188, 1);
+	color: rgba(82, 82, 80, 1);
 	width: 225px;
-	text-align: left;
-	padding: 10px;
-    position: fixed;
-	z-index : 1;
-    right: 0;
-	bottom: 0;
-	font-family: "Montserrat", helvetica, arial, sans-serif;
 	font-weight: normal;
-	color: #363635;
 	text-decoration: none;
+	overflow: hidden; /*planning ahead to clear floats*/
+	font-family: "Montserrat", helvetica, arial, sans-serif;
+	text-align: left;
+}
+
+.legend {
+	padding: 10px;
+  position: fixed;
+	z-index: 1;
+  right: 0;
+	bottom: 0;
 	margin-right: 10px;
 	margin-bottom: 20px;
-	overflow: hidden; /*planning ahead to clear floats*/
 }
 
 .stats {
 	opacity: 0;
 	transition: opacity 1.5s;
 	-webkit-transition: opacity 1.5s;
-	background-color: rgba(255, 255, 255, 0.7);
-	border: 1px solid rgba(190, 188, 188, 1);
-	width: 225px;
-	text-align: left;
 	padding: 10px;
 	padding-right: 0px;
-    position: fixed;
+  position: fixed;
 	z-index : 1;
-    right: 0;
+  right: 0;
 	bottom: 10;
-	font-family: "Montserrat", helvetica, arial, sans-serif;
-	font-weight: normal;
-	color: rgba(82, 82, 80, 1);
-	text-decoration: none;
 	margin-right: 10px;
 	margin-top: 10px;
 /*	margin-bottom: 20px; */
-	overflow: hidden; /*planning ahead to clear floats*/
 }
 
 .stats-title {
