@@ -193,13 +193,18 @@
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 					if (filterField !== undefined) {
 						setTimeout(function(){
-//							console.log("Filtering to", filterField, '==', coords[4]);
-							var featuresInDistrict;
+//							console.log("Filtering", sourceID,  "to", filterField, '==', coords[4]);
+//							console.log(loadedPolygonLayers);
+							for (i in loadedPolygonLayers) {
+								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
+							}
 							for (i in loadedPointLayers) {
 								map.setFilter(
-									loadedPointLayers[i],
+									loadedPointLayers[i][0],
 									['==', filterField, coords[4]]
 								);
+								showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
+//							console.log(loadedPointLayers[i], map.queryRenderedFeatures({layers:[loadedPointLayers[i]]}));
 							}
 						}, 1500);
 					}
@@ -268,65 +273,63 @@
 
 		<div id="main">
 
-		<div id="about">
-			<span style="font-size:16px;cursor:pointer" onclick="openNav()">&#9776; Zoom to Districts</span>
-		</div>
-
-		<script>
-			var coll = document.getElementsByClassName("collapsible");
-			var i;
-
-			for (i = 0; i < coll.length; i++) {
-			  coll[i].addEventListener("click", function() {
-					this.classList.toggle("active");
-					var content = this.nextElementSibling;
-					if (content.style.maxHeight) {
-						content.style.maxHeight = null;
-					} else {
-						content.style.maxHeight = content.scrollHeight + "px";
-					}
-			  });
-			}
-
-			function openNav() {
-				document.getElementById("mySidenav").style.width = "300px";
-				document.getElementById("main").style.marginLeft = "300px";
-			}
-
-			function closeNav() {
-				document.getElementById("mySidenav").style.width = "0";
-				document.getElementById("main").style.marginLeft= "0";
-			}
-		</script>
-
-	<!--END FLYOUT FOR 'ZOOM TO LAYERS'-->
-
-	<!--BEGIN SUMMARY STATS APPEAR/DISAPPEAR WINDOW
-			This bit of code creates the temporary window that appears above the legend
-			and displays the summary stats for the selected district-->
-
-		<div class='stats'>	
-			<div class='stats-title'>Number of Programs in District <span class="select"></span></div>
-			<div class='stats-scale'>
-				<ul class='stats-labels'>
-					<li>Raising Blended Learners:  <span class="count.rbl">X</span></li>
-					<li>Raising Family Partnerships: <span class="count.rfp">X</span></li>
-					<li>Charles Butt Scholars: <span class="count.cbs">X</span></li>
-					<li>Institutes of Higher Education: <span class="count.ihe">X</span></li>
-					<li>Raising School Leaders: <span class="count.rsl">X</span></li>
-
-					
-				</ul>	
+			<div id="about">
+				<span style="font-size:16px;cursor:pointer" onclick="openNav()">&#9776; Zoom to Districts</span>
 			</div>
+
+			<script>
+				var coll = document.getElementsByClassName("collapsible");
+				var i;
+
+				for (i = 0; i < coll.length; i++) {
+					coll[i].addEventListener("click", function() {
+						this.classList.toggle("active");
+						var content = this.nextElementSibling;
+						if (content.style.maxHeight) {
+							content.style.maxHeight = null;
+						} else {
+							content.style.maxHeight = content.scrollHeight + "px";
+						}
+					});
+				}
+
+				function openNav() {
+					document.getElementById("mySidenav").style.width = "300px";
+					document.getElementById("main").style.marginLeft = "300px";
+				}
+
+				function closeNav() {
+					document.getElementById("mySidenav").style.width = "0";
+					document.getElementById("main").style.marginLeft= "0";
+				}
+			</script>
+
+		<!--END FLYOUT FOR 'ZOOM TO LAYERS'-->
+
+		<!--BEGIN SUMMARY STATS APPEAR/DISAPPEAR WINDOW
+				This bit of code creates the temporary window that appears above the legend
+				and displays the summary stats for the selected district-->
+
+			<div class='stats'>
+				<div class='stats-title'>
+					Number of Programs in District <span class="select"></span>
+				</div>
+				<div class='stats-scale'>
+					<ul class='stats-labels'>
+						<li>Raising Blended Learners:  <span class="count.rbl">X</span></li>
+						<li>Raising Family Partnerships: <span class="count.rfp">X</span></li>
+						<li>Charles Butt Scholars: <span class="count.cbs">X</span></li>
+						<li>Institutes of Higher Education: <span class="count.ihe">X</span></li>
+						<li>Raising School Leaders: <span class="count.rsl">X</span></li>
+					</ul>
+				</div> <!-- end of div class='stats-scale' -->
 			</div>
-		</div>
-			
 
-	<!--END SUMMARY STATS APPEAR/DISAPPER WINDOW-->			
+		<!--END SUMMARY STATS APPEAR/DISAPPER WINDOW-->
 
 
-	
-		<div id='map'></div>
+
+			<div id='map'></div>
 
 			<div class='legend'>
 				<div class='legend-title'>Click on a layer name below to toggle its visibility</div>
@@ -379,6 +382,7 @@
 			var originalZoomLevel = map.getZoom();
 
 			var loadedPointLayers = [];
+			var loadedPolygonLayers = [];
 
 			function setVisibilityState(params) {
 				if ((params.visibleOnLoad === undefined) || (params.visibleOnLoad === false)) {
@@ -416,7 +420,7 @@
 					map.on("zoomend", function(){
 						map.setLayoutProperty(params.layerName, 'icon-size', (1 + (map.getZoom() / originalZoomLevel - 1) * params.scalingFactor) * params.iconSize);
 					});
-					loadedPointLayers.push(params.layerName);
+					loadedPointLayers.push([params.layerName, params.legendID]);
 				});
 			}
 
@@ -463,6 +467,9 @@
 							},
 						}
 					);
+					if (params.legendID !== undefined) {
+						loadedPolygonLayers.push([params.polygonLayerName, params.legendID]);
+					}
 				}
 			}
 
@@ -612,15 +619,15 @@
 				runWhenLoadComplete();
 			});
 
-		/* 
-		
+		/*
+
 			*****************************************************
 			These are the popups for the point layers
-			When a click event occurs on a feature in the point layer, open a popup at 
-			the location of the click, with description HTML from its properties 
-			*****************************************************	
+			When a click event occurs on a feature in the point layer, open a popup at
+			the location of the click, with description HTML from its properties
+			*****************************************************
 		*/
-		
+
 		//raising blended learners campuses popup
 			map.on('click', 'raising-blended-learners-campuses-points', function (e) {
 				new mapboxgl.Popup()
@@ -649,8 +656,8 @@
 				return html;
 				//this will return the string to the calling function
 
-			}		
-			
+			}
+
 		//raising family partnerships popup
 			map.on('click', 'raising-family-partnerships-points', function (e) {
 				new mapboxgl.Popup()
@@ -675,8 +682,8 @@
 				return html_rfp;
 				//this will return the string to the calling function
 
-			}			
-			
+			}
+
 		//charles butt scholars popup
 			map.on('click', 'charles-butt-scholars-points', function (e) {
 				new mapboxgl.Popup()
@@ -703,8 +710,8 @@
 				return html;
 				//this will return the string to the calling function
 
-			}			
-		
+			}
+
 		//institutes for higher education popup
 			map.on('click', 'raising-texas-teachers-points', function (e) {
 				new mapboxgl.Popup()
@@ -731,7 +738,7 @@
 
 			}
 
-			
+
 		//raising school leaders popup
 			map.on('click', 'raising-school-leaders-points', function (e) {
 				new mapboxgl.Popup()
@@ -777,8 +784,8 @@
 				httpRequest.open('GET', path);
 				httpRequest.send();
 			}
-			
-			
+
+
 
 			function gus_api(id, callback) {
 				const url = `https://spreadsheets.google.com/feeds/cells/${id}/od6/public/basic?alt=json`;
