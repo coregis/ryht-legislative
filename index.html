@@ -229,7 +229,7 @@
 
 			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
-					document.getElementById('statsBox').style.display = "none";
+					document.getElementById('statsBox').style.opacity = 0;
 					coords = coords.split(",");
 					bbox = [
 						[coords[0], coords[1]],
@@ -259,7 +259,7 @@
 			}
 
 			function updateStatsBox(districtType, districtID) {
-				document.getElementById('statsBox').style.display = "block";
+				document.getElementById('statsBox').style.opacity = 1;
 				if (districtType.indexOf("house") > -1) {
 					document.getElementById("stats.districtType").innerText = "House";
 				} else if (districtType.indexOf("senate") > -1) {

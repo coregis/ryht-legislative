@@ -86,10 +86,11 @@ img {
 }
 
 .stats {
-	display: none;
-	background-color: #ffffff;
-	opacity:.8;
-	border: 1px solid #989797;
+	opacity: 0;
+	transition: opacity 1.5s;
+	-webkit-transition: opacity 1.5s;
+	background-color: rgba(255, 255, 255, 0.7);
+	border: 1px solid rgba(152, 151, 151, 1);
 	width: 225px;
 	text-align: left;
 	padding: 10px;
@@ -100,7 +101,7 @@ img {
 	bottom: 10;
 	font-family: "Montserrat", helvetica, arial, sans-serif;
 	font-weight: normal;
-	color: #363635;
+	color: rgba(54, 54, 53, 1);
 	text-decoration: none;
 	margin-right: 10px;
 	margin-top: 10px;
