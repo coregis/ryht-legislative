@@ -183,6 +183,24 @@
 				return [[minX, minY], [maxX, maxY]];
 			}
 
+			// from https://www.mapbox.com/mapbox-gl-js/example/filter-features-within-map-view/
+			// Because features come from tiled vector data, feature geometries may be split
+			// or duplicated across tile boundaries and, as a result, features may appear
+			// multiple times in query results.
+			function getUniqueFeatures(array, comparatorProperty) {
+				var existingFeatureKeys = {};
+				var uniqueFeatures = array.filter(function(el) {
+					if (existingFeatureKeys[el.properties[comparatorProperty]]) {
+						return false;
+					} else {
+						existingFeatureKeys[el.properties[comparatorProperty]] = true;
+						return true;
+					}
+				});
+
+				return uniqueFeatures;
+			}
+
 			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
 					coords = coords.split(",");
@@ -193,8 +211,6 @@
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 					if (filterField !== undefined) {
 						setTimeout(function(){
-//							console.log("Filtering", sourceID,  "to", filterField, '==', coords[4]);
-//							console.log(loadedPolygonLayers);
 							for (i in loadedPolygonLayers) {
 								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
 							}
@@ -204,10 +220,33 @@
 									['==', filterField, coords[4]]
 								);
 								showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
-//							console.log(loadedPointLayers[i], map.queryRenderedFeatures({layers:[loadedPointLayers[i]]}));
+							}
+							for (i = 300; i <= 1500; i += 300) {
+								setTimeout(function(){
+									updateStatsBox(filterField, coords[4]);
+								}, i);
 							}
 						}, 1500);
 					}
+				}
+			}
+
+			function updateStatsBox(districtType, districtID) {
+				if (districtType.indexOf("house") > -1) {
+					document.getElementById("stats.districtType").innerText = "House";
+				} else if (districtType.indexOf("senate") > -1) {
+					document.getElementById("stats.districtType").innerText = "Senate";
+				} else {
+					document.getElementById("stats.districtType").innerText = "";
+				}
+				document.getElementById("stats.districtName").innerText = districtID;
+				for (i in loadedPointLayers) {
+					pointsInDistrict = getUniqueFeatures(
+						map.queryRenderedFeatures( { layers:[loadedPointLayers[i][0]] } ),
+						"unique_id"
+					);
+					counterID = "count." + loadedPointLayers[i][0];
+					document.getElementById(counterID).innerText = pointsInDistrict.length;
 				}
 			}
 		</script>
@@ -312,15 +351,18 @@
 
 			<div class='stats'>
 				<div class='stats-title'>
-					Number of Programs in District <span class="select"></span>
+					Number of Programs in
+					<br />
+					<span class="select" id="stats.districtType"></span> District <span class="select" id="stats.districtName"></span>
 				</div>
 				<div class='stats-scale'>
 					<ul class='stats-labels'>
-						<li>Raising Blended Learners:  <span class="count.rbl">X</span></li>
-						<li>Raising Family Partnerships: <span class="count.rfp">X</span></li>
-						<li>Charles Butt Scholars: <span class="count.cbs">X</span></li>
-						<li>Institutes of Higher Education: <span class="count.ihe">X</span></li>
-						<li>Raising School Leaders: <span class="count.rsl">X</span></li>
+<!-- for maintenance: always make the id of these = count.layerName because that's what the updateStatsBox() function looks for -->
+						<li>Raising Blended Learners:  <span class="count.rbl" id="count.raising-blended-learners-campuses-points"></span></li>
+						<li>Raising Family Partnerships: <span class="count.rfp" id="count.raising-family-partnerships-points"></span></li>
+						<li>Charles Butt Scholars: <span class="count.cbs" id="count.charles-butt-scholars-points"></span></li>
+						<li>Institutes of Higher Education: <span class="count.ihe" id="count.raising-texas-teachers-points"></span></li>
+						<li>Raising School Leaders: <span class="count.rsl" id="count.raising-school-leaders-points"></span></li>
 					</ul>
 				</div> <!-- end of div class='stats-scale' -->
 			</div>
