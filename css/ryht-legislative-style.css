@@ -90,7 +90,7 @@ img {
 	transition: opacity 1.5s;
 	-webkit-transition: opacity 1.5s;
 	background-color: rgba(255, 255, 255, 0.7);
-	border: 1px solid rgba(152, 151, 151, 1);
+	border: 1px solid rgba(190, 188, 188, 1);
 	width: 225px;
 	text-align: left;
 	padding: 10px;
@@ -101,7 +101,7 @@ img {
 	bottom: 10;
 	font-family: "Montserrat", helvetica, arial, sans-serif;
 	font-weight: normal;
-	color: rgba(54, 54, 53, 1);
+	color: rgba(82, 82, 80, 1);
 	text-decoration: none;
 	margin-right: 10px;
 	margin-top: 10px;
@@ -109,23 +109,23 @@ img {
 	overflow: hidden; /*planning ahead to clear floats*/
 }
 
-  .stats-title {
+.stats-title {
 	position:relative;
 	bottom:0;
 	right:0;
-    text-align: left;
-    margin-bottom: 5px;
+  text-align: left;
+  margin-bottom: 5px;
 	font-family: "Montserrat", helvetica, arial, sans-serif;
-    font-weight: bold;
-    font-size: 90%;
-    }
-  .stats .stats-scale ul {
-    margin: 0;
-    margin-bottom: 5px;
-    padding: 0;
-    float: left;
-    list-style: none;
-    }
+  font-weight: bold;
+  font-size: 90%;
+}
+.stats .stats-scale ul {
+   margin: 0;
+   margin-bottom: 5px;
+   padding: 0;
+   float: left;
+   list-style: none;
+}
   .stats .stats-scale ul li {
     font-size: 75%;
     list-style: none;
