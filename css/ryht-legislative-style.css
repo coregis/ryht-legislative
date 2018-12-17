@@ -86,6 +86,7 @@ img {
 }
 
 .stats {
+	display: none;
 	background-color: #ffffff;
 	opacity:.8;
 	border: 1px solid #989797;
@@ -358,7 +359,7 @@ p.moreinfo  {
   font-size:14px;
  /* width:auto !important;*/
   }
-  
+
   p.programs  {
   padding: 8px 8px 8px 32px;
   background: #ffff;
@@ -367,7 +368,7 @@ p.moreinfo  {
   font-size:10px;
  /* width:auto !important;*/
   }
-  
+
  .sidenav .programlink {
     /*padding: 8px 8px 8px 32px;*/
     text-decoration: none;
@@ -375,7 +376,7 @@ p.moreinfo  {
     font-size: 10px;
     color: #ee5e2a;
     transition: 0.3s
-} 
+}
 
  .content .programlink {
     /*padding: 8px 8px 8px 32px;*/
@@ -384,7 +385,7 @@ p.moreinfo  {
     font-size: 10px;
     color: #ee5e2a;
     transition: 0.3s
-} 
+}
 
 .sidenav a {
     /*padding: 8px 8px 8px 32px;*/

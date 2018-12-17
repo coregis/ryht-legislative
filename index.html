@@ -229,6 +229,7 @@
 
 			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
+					document.getElementById('statsBox').style.display = "none";
 					coords = coords.split(",");
 					bbox = [
 						[coords[0], coords[1]],
@@ -258,6 +259,7 @@
 			}
 
 			function updateStatsBox(districtType, districtID) {
+				document.getElementById('statsBox').style.display = "block";
 				if (districtType.indexOf("house") > -1) {
 					document.getElementById("stats.districtType").innerText = "House";
 				} else if (districtType.indexOf("senate") > -1) {
@@ -375,7 +377,7 @@
 				This bit of code creates the temporary window that appears above the legend
 				and displays the summary stats for the selected district-->
 
-			<div class='stats'>
+			<div class='stats' id='statsBox'>
 				<div class='stats-title'>
 					Number of Programs in
 					<br />
