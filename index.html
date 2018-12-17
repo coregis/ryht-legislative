@@ -193,8 +193,7 @@
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 					if (filterField !== undefined) {
 						setTimeout(function(){
-							console.log("Filtering to", filterField, '==', coords[4]);
-							var featuresInDistrict;
+							console.log("Filtering", sourceID,  "to", filterField, '==', coords[4]);
 							for (i in loadedPointLayers) {
 								map.setFilter(
 									loadedPointLayers[i],
