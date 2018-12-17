@@ -211,7 +211,6 @@
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 					if (filterField !== undefined) {
 						setTimeout(function(){
-							console.log("Filtering", sourceID,  "to", filterField, '==', coords[4]);
 							for (i in loadedPolygonLayers) {
 								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
 							}
@@ -224,7 +223,6 @@
 							}
 							for (i = 300; i <= 1500; i += 300) {
 								setTimeout(function(){
-									console.log(i);
 									updateStatsBox(filterField, coords[4]);
 								}, i);
 							}
@@ -238,8 +236,7 @@
 					document.getElementById("stats.districtType").innerText = "House";
 				} else if (districtType.indexOf("senate") > -1) {
 					document.getElementById("stats.districtType").innerText = "Senate";
-				}
-				else {
+				} else {
 					document.getElementById("stats.districtType").innerText = "";
 				}
 				document.getElementById("stats.districtName").innerText = districtID;
@@ -249,14 +246,7 @@
 						"unique_id"
 					);
 					counterID = "count." + loadedPointLayers[i][0];
-					console.log(counterID);
-					console.log(document.getElementById(counterID));
 					document.getElementById(counterID).innerText = pointsInDistrict.length;
-					console.log(
-						loadedPointLayers[i][0],
-						pointsInDistrict.length,
-						pointsInDistrict
-					);
 				}
 			}
 		</script>
