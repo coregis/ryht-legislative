@@ -39,10 +39,31 @@
 			var showHouseDistricts = true;
 			var showSenateDistricts = false;
 			if (
-				(urlParams["districts"] && urlParams["districts"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["display"] && urlParams["display"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["Districts"] && urlParams["Districts"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["Display"] && urlParams["Display"].toLowerCase().indexOf("sen") > -1)
+				(
+					urlParams["districts"] && (
+						urlParams["districts"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["districts"].toLowerCase() === 's'
+					)
+				) || (
+					urlParams["Districts"] && (
+						urlParams["Districts"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["Districts"].toLowerCase() === 's'
+					)
+				) || (
+					urlParams["display"] && (
+						urlParams["display"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["display"].toLowerCase() === 's'
+					)
+				) || (
+					urlParams["Display"] && (
+						urlParams["Display"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["Display"].toLowerCase() === 's'
+					)
+				)
 			) {
 				showHouseDistricts = false;
 				showSenateDistricts = true;
@@ -208,6 +229,7 @@
 
 			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
+					document.getElementById('statsBox').style.opacity = 0;
 					coords = coords.split(",");
 					bbox = [
 						[coords[0], coords[1]],
@@ -237,7 +259,7 @@
 								);
 								showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
 							}
-							for (i = 300; i <= 2100; i += 300) {
+							for (i = 500; i <= 2500; i += 500) {
 								setTimeout(function(){
 									updateStatsBox(filterField, coords[4]);
 								}, i);
@@ -248,6 +270,7 @@
 			}
 
 			function updateStatsBox(districtType, districtID) {
+				document.getElementById('statsBox').style.opacity = 1;
 				if (districtType.indexOf("house") > -1) {
 					document.getElementById("stats.districtType").innerText = "House";
 				} else if (districtType.indexOf("senate") > -1) {
@@ -263,6 +286,34 @@
 					);
 					counterID = "count." + loadedPointLayers[i][0];
 					document.getElementById(counterID).innerText = pointsInDistrict.length;
+				}
+			}
+
+			function standardizeCase(txt) {
+				console.log("INPUT", txt);
+				if (txt === undefined || txt === "") {
+					return "";
+				} else {
+					txt = txt.replace(/([^\W_]+[^\s-]*) */g, function(x) {
+						return x.charAt(0).toUpperCase() + x.substr(1).toLowerCase();
+					});
+					txt = " " + txt + " ";
+	// NB: always include the leading & trailing spaces in this list to avoid accidentally selecting substrings.  The .trim() call at the end will clean them back up.
+					overrides = [
+						[" Isd ", " ISD "],
+						[" Cisd ", " CISD "],
+						[" El ", " Elementary "],
+						[" Pri ", " Primary "],
+						[" J H ", " Junior High" ],
+						[" Int ", " Intermediate "],
+						[" H S ", " High "],
+						[" Aec ", " Alternative Education Center "]
+					];
+					for (i in overrides) {
+						txt = txt.replace(overrides[i][0], overrides[i][1]);
+					}
+					console.log("OUTPUT", txt);
+					return txt.trim();
 				}
 			}
 		</script>
@@ -295,26 +346,26 @@
 			<button class="collapsible">Read more...</button>
 			<div class="content">
 				<p class="programs">
-					<a href="https://www.raiseyourhandtexas.org/foundation/blended/" class="programlink">Raising Blended Learners</a>  is a pilot instructional program that uses both online and brick-and-mortar strategies to create and scale a more student-centered approach to instruction in Texas. Five demonstration sites will receive up to $500,000 to implement programs. In addition, 15 districts selected as pilot networks have received implementation support.
+					<a href="https://www.raiseyourhandtexas.org/foundation/blended/" class="programlink" target="_blank">Raising Blended Learners</a>  is a pilot instructional program that uses both online and brick-and-mortar strategies to create and scale a more student-centered approach to instruction in Texas. Five demonstration sites will receive up to $500,000 to implement programs. In addition, 15 districts selected as pilot networks have received implementation support.
 				</p>
 			</div>
 
 			<img src="images/rtt_logo_sidenav.png" />
 			<button class="collapsible">Read more...</button>
 			<div class="content">
-			 <p class="programs"><a href="https://www.raiseyourhandtexas.org/foundation/raising-texas-teachers/" class="programlink">Raising Texas Teachers</a> is a $50 million investment over the next 10 years toward elevating the teaching profession in Texas. The program will provide $8,000 per student per year in scholarship funding for students committed to a career in teaching, in addition to technical support at 10 premier teacher preparation programs across the state. Over time, the scholarship program will grow to include 500 fellows annually.</p>
+			 <p class="programs"><a href="https://www.raiseyourhandtexas.org/foundation/raising-texas-teachers/" class="programlink" target="_blank">Raising Texas Teachers</a> is a $50 million investment over the next 10 years toward elevating the teaching profession in Texas. The program will provide $8,000 per student per year in scholarship funding for students committed to a career in teaching, in addition to technical support at 10 premier teacher preparation programs across the state. Over time, the scholarship program will grow to include 500 fellows annually.</p>
 			</div>
 
 			<img src="images/rsl_logo_sidenav.png" />
 			<button class="collapsible">Read more...</button>
 			<div class="content">
-				<p class="programs">Through <a href="https://www.raiseyourhandtexas.org/foundation/raising-school-leaders/" class="programlink">Raising School Leaders</a>, Raise Your Hand Texas and the Raise Your Hand Texas Foundation have sent more than 1,000 school principals, school district teams, and other public education stakeholders to leadership development and coaching programs at Harvard University and other colleges and education organizations across the country. To date, our total investment in the program has exceeded +$15 million.</p>
+				<p class="programs">Through <a href="https://www.raiseyourhandtexas.org/foundation/raising-school-leaders/" class="programlink" target="_blank">Raising School Leaders</a>, Raise Your Hand Texas and the Raise Your Hand Texas Foundation have sent more than 1,000 school principals, school district teams, and other public education stakeholders to leadership development and coaching programs at Harvard University and other colleges and education organizations across the country. To date, our total investment in the program has exceeded +$15 million.</p>
 			</div>
 
 			<img src="images/rfp_logo_sidenav.png" />
 			<button class="collapsible">Read more...</button>
 			<div class="content">
-			 <p class="programs"><a href="https://www.raiseyourhandtexas.org/foundation/raising-family-partnerships/" class="programlink">Raising Family Partnerships</a> is a year-long fellowship for public school principals and their leadership teams to redesign how families, schools, and communities collaborate to improve student outcomes. To date, Raise Your Hand has invested +$300,000 in helping fellows build capacity and scale a framework for better partnerships between educators and families.</p>
+			 <p class="programs"><a href="https://www.raiseyourhandtexas.org/foundation/raising-family-partnerships/" class="programlink" target="_blank">Raising Family Partnerships</a> is a year-long fellowship for public school principals and their leadership teams to redesign how families, schools, and communities collaborate to improve student outcomes. To date, Raise Your Hand has invested +$300,000 in helping fellows build capacity and scale a framework for better partnerships between educators and families.</p>
 			</div>
 
 
@@ -365,7 +416,7 @@
 				This bit of code creates the temporary window that appears above the legend
 				and displays the summary stats for the selected district-->
 
-			<div class='stats'>
+			<div class='stats' id='statsBox'>
 				<div class='stats-title'>
 					Number of Programs in
 					<br />
@@ -736,7 +787,7 @@
 
 			function fillpopup_rfp(data){
 				var html_rfp = "";
-				html_rfp = html_rfp + "<span class='varname'>School: </span> <span class='attribute'>" + data.account_name + "</span>";
+				html_rfp = html_rfp + "<span class='varname'>School: </span> <span class='attribute'>" + standardizeCase(data.account_name) + "</span>";
 				return html_rfp;
 				//this will return the string to the calling function
 
@@ -819,9 +870,9 @@
 				var html = "";
 				html = html + "<span class='varname'>Institute: </span> <span class='attribute'>" + data.institute + "</span>";
 				html = html + "<br />"
-				html = html + "<span class='varname'>Campus: </span> <span class='attribute'>" + data.campus + "</span>";
+				html = html + "<span class='varname'>Campus: </span> <span class='attribute'>" + standardizeCase(data.campus) + "</span>";
 				html = html + "<br />"
-				html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + data.district + "</span>";
+				html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + standardizeCase(data.district) + "</span>";
 				return html;
 				//this will return the string to the calling function
 
