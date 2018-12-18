@@ -39,14 +39,32 @@
 			var showHouseDistricts = true;
 			var showSenateDistricts = false;
 			if (
-				(urlParams["districts"] && urlParams["districts"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["display"] && urlParams["display"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["Districts"] && urlParams["Districts"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["Display"] && urlParams["Display"].toLowerCase().indexOf("sen") > -1) ||
-				(urlParams["districts"] && urlParams["districts"].toLowerCase() === 's') ||
-				(urlParams["display"] && urlParams["display"].toLowerCase() === 's') ||
-				(urlParams["Districts"] && urlParams["Districts"].toLowerCase() === 's') ||
-				(urlParams["Display"] && urlParams["Display"].toLowerCase() === 's')			) {
+				(
+					urlParams["districts"] && (
+						urlParams["districts"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["districts"].toLowerCase() === 's'
+					)
+				) || (
+					urlParams["Districts"] && (
+						urlParams["Districts"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["Districts"].toLowerCase() === 's'
+					)
+				) || (
+					urlParams["display"] && (
+						urlParams["display"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["display"].toLowerCase() === 's'
+					)
+				) || (
+					urlParams["Display"] && (
+						urlParams["Display"].toLowerCase().indexOf("sen") > -1
+						||
+						urlParams["Display"].toLowerCase() === 's'
+					)
+				)
+			) {
 				showHouseDistricts = false;
 				showSenateDistricts = true;
 			}
@@ -211,6 +229,7 @@
 
 			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
+					document.getElementById('statsBox').style.opacity = 0;
 					coords = coords.split(",");
 					bbox = [
 						[coords[0], coords[1]],
@@ -240,6 +259,7 @@
 			}
 
 			function updateStatsBox(districtType, districtID) {
+				document.getElementById('statsBox').style.opacity = 1;
 				if (districtType.indexOf("house") > -1) {
 					document.getElementById("stats.districtType").innerText = "House";
 				} else if (districtType.indexOf("senate") > -1) {
@@ -357,7 +377,7 @@
 				This bit of code creates the temporary window that appears above the legend
 				and displays the summary stats for the selected district-->
 
-			<div class='stats'>
+			<div class='stats' id='statsBox'>
 				<div class='stats-title'>
 					Number of Programs in
 					<br />
