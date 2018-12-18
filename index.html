@@ -248,7 +248,7 @@
 								);
 								showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
 							}
-							for (i = 300; i <= 2100; i += 300) {
+							for (i = 500; i <= 2500; i += 500) {
 								setTimeout(function(){
 									updateStatsBox(filterField, coords[4]);
 								}, i);
@@ -275,6 +275,34 @@
 					);
 					counterID = "count." + loadedPointLayers[i][0];
 					document.getElementById(counterID).innerText = pointsInDistrict.length;
+				}
+			}
+
+			function standardizeCase(txt) {
+				console.log("INPUT", txt);
+				if (txt === undefined || txt === "") {
+					return "";
+				} else {
+					txt = txt.replace(/([^\W_]+[^\s-]*) */g, function(x) {
+						return x.charAt(0).toUpperCase() + x.substr(1).toLowerCase();
+					});
+					txt = " " + txt + " ";
+	// NB: always include the leading & trailing spaces in this list to avoid accidentally selecting substrings.  The .trim() call at the end will clean them back up.
+					overrides = [
+						[" Isd ", " ISD "],
+						[" Cisd ", " CISD "],
+						[" El ", " Elementary "],
+						[" Pri ", " Primary "],
+						[" J H ", " Junior High" ],
+						[" Int ", " Intermediate "],
+						[" H S ", " High "],
+						[" Aec ", " Alternative Education Center "]
+					];
+					for (i in overrides) {
+						txt = txt.replace(overrides[i][0], overrides[i][1]);
+					}
+					console.log("OUTPUT", txt);
+					return txt.trim();
 				}
 			}
 		</script>
@@ -748,7 +776,7 @@
 
 			function fillpopup_rfp(data){
 				var html_rfp = "";
-				html_rfp = html_rfp + "<span class='varname'>School: </span> <span class='attribute'>" + data.account_name + "</span>";
+				html_rfp = html_rfp + "<span class='varname'>School: </span> <span class='attribute'>" + standardizeCase(data.account_name) + "</span>";
 				return html_rfp;
 				//this will return the string to the calling function
 
@@ -831,9 +859,9 @@
 				var html = "";
 				html = html + "<span class='varname'>Institute: </span> <span class='attribute'>" + data.institute + "</span>";
 				html = html + "<br />"
-				html = html + "<span class='varname'>Campus: </span> <span class='attribute'>" + data.campus + "</span>";
+				html = html + "<span class='varname'>Campus: </span> <span class='attribute'>" + standardizeCase(data.campus) + "</span>";
 				html = html + "<br />"
-				html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + data.district + "</span>";
+				html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + standardizeCase(data.district) + "</span>";
 				return html;
 				//this will return the string to the calling function
 
