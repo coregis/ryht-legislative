@@ -16,7 +16,7 @@
 
 	<head>
 		<meta charset='utf-8' />
-		<title>Raise Your Hand Texas Internal Web Map</title>
+		<title>Raise Your Hand Texas programs</title>
 		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
 		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
@@ -234,7 +234,14 @@
 				} else if (showSenateDistricts) {
 					newURL += '?districts=senate';
 				}
-				if (district !== null) {
+				if (district === null) {
+					if (showHouseDistricts) {
+						newTitle += ' by House District ';
+					} else if (showSenateDistricts) {
+						newTitle += ' by Senate District';
+					}
+
+				} else {
 					newURL += (newURL.indexOf('?')) ? '&' : '?';
 					newURL += 'zoomto=' + district;
 					newTitle += ' in '
