@@ -365,6 +365,11 @@ p.districtswitcher  {
  /* width:auto !important;*/
 }
 
+/* some text that just needs to be hidden by default so the code can activate the context-appropriate option */
+span#house-district-reference, span#senate-district-reference {
+	display: none;
+}
+
 p.programs  {
   padding: 8px 8px 8px 32px;
   background: #ffff;

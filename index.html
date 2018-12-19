@@ -332,7 +332,7 @@
 				<br /><br /><br />
 			</p>
 			<p class="moreinfo">
-				Use the drop-down menus below to zoom to a School District, House District, or Senate District of your choice. Choose the top entry on any drop down to return to the full extent of the state.
+				Use the drop-down menus below to zoom to a <span id="house-district-reference">House</span><span id="senate-district-reference">Senate</span> District of your choice. Choose the top entry on any drop down to return to the full extent of the state.
 				<br /><br />
 
 				<!--Drop down controls-->
@@ -480,12 +480,14 @@
 			if (showHouseDistricts) {
 				document.getElementById("house_districts_legend_entry").style.display = "inline";
 				document.getElementById("switch-to-senate-districts").style.display = "block";
+				document.getElementById("house-district-reference").style.display = "inline";
 			} else {
 				removeElement("house-districts-control"); // the dropdown menu
 			}
 			if (showSenateDistricts) {
 				document.getElementById("senate_districts_legend_entry").style.display = "inline";
 				document.getElementById("switch-to-house-districts").style.display = "block";
+				document.getElementById("senate-district-reference").style.display = "inline";
 			} else {
 				removeElement("senate-districts-control");
 			}
