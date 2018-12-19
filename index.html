@@ -33,7 +33,7 @@
 		<script>
 			// first we check for the URL parameter '?districts=senate'.  If found, we'll show state senate districts; otherwise state house
 			var urlParams = {};
-			var urlParts = window.location.href.replace(
+			window.location.href.replace(
 				/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {urlParams[key] = value;}
 			);
 			var showHouseDistricts = true;
