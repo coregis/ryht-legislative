@@ -339,6 +339,19 @@
 
 				<select id="house-districts-control" onchange="zoomToPolygon('state-house-districts', this.value, 'house_dist');"></select>
 				<select id="senate-districts-control" onchange="zoomToPolygon('state-senate-districts', this.value, 'senate_dist');"></select>
+
+				<!-- House/Senate districts switcher -->
+
+				<p id="switch-to-senate-districts" class="districtswitcher">
+					Showing State <b>House</b> Districts.
+					<br />
+					<a href="index.html?districts=senate">Switch to State <b>Senate</b> Districts.</a>
+				</p>
+				<p id="switch-to-house-districts" class="districtswitcher">
+					Showing State <b>Senate</b> Districts.
+					<br />
+					<a href="index.html?districts=house">Switch to State <b>House</b> Districts.</a>
+				</p>
 			</p>
 
 			<!--Program logos and descriptions-->
@@ -466,11 +479,13 @@
 			// make appropriate legend entry visible, and remove whichever zoom-to-districts dropdown we're not going to be using
 			if (showHouseDistricts) {
 				document.getElementById("house_districts_legend_entry").style.display = "inline";
+				document.getElementById("switch-to-senate-districts").style.display = "block";
 			} else {
 				removeElement("house-districts-control"); // the dropdown menu
 			}
 			if (showSenateDistricts) {
 				document.getElementById("senate_districts_legend_entry").style.display = "inline";
+				document.getElementById("switch-to-house-districts").style.display = "block";
 			} else {
 				removeElement("senate-districts-control");
 			}

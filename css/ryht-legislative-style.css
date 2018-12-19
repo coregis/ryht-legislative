@@ -352,16 +352,27 @@ p.moreinfo  {
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-size:14px;
  /* width:auto !important;*/
-  }
+}
 
-  p.programs  {
+/* I'm starting this as a copy of .moreinfo, with just the top & bottom padding removed */
+p.districtswitcher  {
+	display: none; /* leave this as display:none because the code in the page will make the right control visible */
+  padding: 0px 8px 0px 32px;
+  background: #ffff;
+  color:#4a4a4a;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  font-size:14px;
+ /* width:auto !important;*/
+}
+
+p.programs  {
   padding: 8px 8px 8px 32px;
   background: #ffff;
   color:#4a4a4a;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-size:10px;
  /* width:auto !important;*/
-  }
+}
 
  .sidenav .programlink {
     /*padding: 8px 8px 8px 32px;*/
