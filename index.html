@@ -118,7 +118,7 @@
 			function populateZoomControl(selectID, sourceID, fieldName, layerName) {
 				polygons = getPolygons(sourceID, fieldName);
 				var select = document.getElementById(selectID);
-				select.options[0] = new Option(layerName);
+				select.options[0] = new Option(layerName, "-108,25,-88,37,0");
 				updateURL();
 				for (i in polygons) {
 					select.options[select.options.length] = new Option(
@@ -226,7 +226,7 @@
 				return uniqueFeatures;
 			}
 
-			function updateURL(district=null) {
+			function updateURL(district='0') {
 				newURL = window.location.pathname;
 				newTitle = 'Raise Your Hand Texas programs'
 				if (showHouseDistricts) {
@@ -234,13 +234,12 @@
 				} else if (showSenateDistricts) {
 					newURL += '?districts=senate';
 				}
-				if (district === null) {
+				if (district === '0') {
 					if (showHouseDistricts) {
 						newTitle += ' by House District ';
 					} else if (showSenateDistricts) {
 						newTitle += ' by Senate District';
 					}
-
 				} else {
 					newURL += (newURL.indexOf('?')) ? '&' : '?';
 					newURL += 'zoomto=' + district;
@@ -283,9 +282,12 @@
 							for (i in loadedPolygonLayers) {
 								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
 								if (
-									(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
-									||
-									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
+									(coords[4] !== '0')
+									&& (
+										(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
+										||
+										(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
+									)
 								) {
 									map.setFilter(
 										loadedPolygonLayers[i][0],
@@ -293,17 +295,19 @@
 									);
 								}
 							}
-							for (i in loadedPointLayers) {
-								map.setFilter(
-									loadedPointLayers[i][0],
-									['==', filterField, coords[4]]
-								);
-								showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
-							}
-							for (i = 500; i <= 2500; i += 500) {
-								setTimeout(function(){
-									updateStatsBox(filterField, coords[4]);
-								}, i);
+							if (coords[4] !== '0') {
+								for (i in loadedPointLayers) {
+									map.setFilter(
+										loadedPointLayers[i][0],
+										['==', filterField, coords[4]]
+									);
+									showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
+								}
+								for (i = 500; i <= 2500; i += 500) {
+									setTimeout(function(){
+										updateStatsBox(filterField, coords[4]);
+									}, i);
+								}
 							}
 						}, 1500);
 					}
@@ -534,14 +538,13 @@
 
 			//set bounds to Texas
 			var bounds = [
-					[-114.9594,21.637], // southwest coords
-					[-85.50,39.317] // northeast coords
+					[-114.9594, 21.637], // southwest coords
+					[-85.50, 39.317] // northeast coords
 				];
-
 			var map = new mapboxgl.Map({
 				container: 'map', // container id
 				style: 'mapbox://styles/core-gis/cjbcz8eyg70il2snv8ccgahf7', // stylesheet location; this is the style with markers turned OFF
-				center: [-98.887939,31.821565], // starting position [lng, lat]
+				center: [-98.887939, 31.821565], // starting position [lng, lat]
 				zoom: 5.5, // starting zoom
 				maxBounds: bounds // sets bounds as max
 			});
