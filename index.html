@@ -282,27 +282,32 @@
 							for (i in loadedPolygonLayers) {
 								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
 								if (
-									(coords[4] !== '0')
-									&& (
-										(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
-										||
-										(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
-									)
+									(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
+									||
+									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
 								) {
-									map.setFilter(
-										loadedPolygonLayers[i][0],
-										['==', 'District', coords[4]]
-									);
+									if (coords[4] === '0') {
+										map.setFilter(loadedPolygonLayers[i][0], null);
+									} else {
+										map.setFilter(
+											loadedPolygonLayers[i][0],
+											['==', 'District', coords[4]]
+										);
+									}
 								}
 							}
-							if (coords[4] !== '0') {
-								for (i in loadedPointLayers) {
+							for (i in loadedPointLayers) {
+								if (coords[4] === '0') {
+									map.setFilter(loadedPointLayers[i][0], null);
+								} else {
 									map.setFilter(
 										loadedPointLayers[i][0],
 										['==', filterField, coords[4]]
 									);
 									showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
 								}
+							}
+							if (coords[4] !== '0') {
 								for (i = 500; i <= 2500; i += 500) {
 									setTimeout(function(){
 										updateStatsBox(filterField, coords[4]);
