@@ -130,6 +130,8 @@
 						} else if (showSenateDistricts) {
 							zoomToPolygon(sourceID, polygons[i].bbox.toString() + ',' + polygons[i].name, 'senate_dist');
 						}
+					} else {
+						updateURL();
 					}
 				}
 			}
