@@ -244,8 +244,8 @@
 					}
 					newTitle += 'District ' + district;
 				}
-				console.log(newURL, newTitle);
 				history.pushState({id: 'zoomto'}, newTitle, newURL);
+				document.title = newTitle;
 			}
 
 			function zoomToPolygon(sourceID, coords, filterField) {
