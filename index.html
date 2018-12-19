@@ -225,6 +225,29 @@
 				return uniqueFeatures;
 			}
 
+			function updateURL(district=null) {
+				newURL = window.location.pathname;
+				newTitle = 'Raise Your Hand Texas programs'
+				if (showHouseDistricts) {
+					newURL += '?districts=house';
+				} else if (showSenateDistricts) {
+					newURL += '?districts=senate';
+				}
+				if (district !== null) {
+					newURL += (newURL.indexOf('?')) ? '&' : '?';
+					newURL += 'zoomto=' + district;
+					newTitle += ' in '
+					if (showHouseDistricts) {
+						newTitle += 'House ';
+					} else if (showSenateDistricts) {
+						newTitle += 'Senate ';
+					}
+					newTitle += 'District ' + district;
+				}
+				console.log(newURL, newTitle);
+				history.pushState({id: 'zoomto'}, newTitle, newURL);
+			}
+
 			function zoomToPolygon(sourceID, coords, filterField) {
 				if (typeof coords !== 'undefined') {
 					document.getElementById('statsBox').style.opacity = 0;
@@ -233,6 +256,7 @@
 						[coords[0], coords[1]],
 						[coords[2], coords[3]]
 					];
+					updateURL(district=coords[4]);
 					if (showHouseDistricts) {
 						showHideLayer('state-house-districts-lines', markerName='state_house_districts', showOnly=true);
 					} else if (showSenateDistricts) {
@@ -248,7 +272,6 @@
 									||
 									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
 								) {
-									console.log(loadedPolygonLayers[i], coords[4], map.queryRenderedFeatures( { layers:[loadedPolygonLayers[i][0]] } ));
 									map.setFilter(
 										loadedPolygonLayers[i][0],
 										['==', 'District', coords[4]]
