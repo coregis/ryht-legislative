@@ -95,11 +95,11 @@
 				}
 				else {
 					if (showHouseDistricts) {
-						populateZoomControl("house-districts-control", "state-house-districts", "District", "State House Districts");
+						populateZoomControl("house-districts-control", "state-house-districts", "District", "Texas House Districts");
 						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-house-districts-lines');
 					}
 					if (showSenateDistricts) {
-						populateZoomControl("senate-districts-control", "state-senate-districts", "District", "State Senate Districts");
+						populateZoomControl("senate-districts-control", "state-senate-districts", "District", "Texas Senate Districts");
 						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-senate-districts-lines');
 					}
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
@@ -390,14 +390,14 @@
 				<!-- House/Senate districts switcher -->
 
 				<p id="switch-to-senate-districts" class="districtswitcher">
-					Showing State <b>House</b> Districts.
+					Showing Texas <b>House</b> Districts.
 					<br />
-					<a href="index.html?districts=senate">Switch to State <b>Senate</b> Districts.</a>
+					<a href="index.html?districts=senate">Switch to Texas <b>Senate</b> Districts.</a>
 				</p>
 				<p id="switch-to-house-districts" class="districtswitcher">
-					Showing State <b>Senate</b> Districts.
+					Showing Texas <b>Senate</b> Districts.
 					<br />
-					<a href="index.html?districts=house">Switch to State <b>House</b> Districts.</a>
+					<a href="index.html?districts=house">Switch to Texas <b>House</b> Districts.</a>
 				</p>
 			</p>
 
@@ -443,7 +443,7 @@
 		<div id="main">
 
 			<div id="about">
-				<span style="font-size:16px;cursor:pointer" onclick="openNav()">&#9776; Zoom to Districts</span>
+				<span style="font-size:16px;cursor:pointer" onclick="openNav()">&#9776; Zoom to Legislative Districts</span>
 			</div>
 
 			<script>
@@ -491,7 +491,7 @@
 						<li>Raising Blended Learners:  <span class="count.rbl" id="count.raising-blended-learners-campuses-points"></span></li>
 						<li>Raising Family Partnerships: <span class="count.rfp" id="count.raising-family-partnerships-points"></span></li>
 						<li>Charles Butt Scholars: <span class="count.cbs" id="count.charles-butt-scholars-points"></span></li>
-						<li>Institutes of Higher Education: <span class="count.ihe" id="count.raising-texas-teachers-points"></span></li>
+						<li>Partner Universities: <span class="count.ihe" id="count.raising-texas-teachers-points"></span></li>
 						<li>Raising School Leaders: <span class="count.rsl" id="count.raising-school-leaders-points"></span></li>
 					</ul>
 				</div> <!-- end of div class='stats-scale' -->
@@ -510,7 +510,7 @@
 						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
 						<li onClick="showHideLayer('raising-family-partnerships-points', markerName='raising_family_partnerships');"><span id="raising_family_partnerships" class="inactive"></span>Raising Family Partnerships</li>
 						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
-						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Institutes of Higher Education</li>
+						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Partner Universities</li>
 						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
 						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
