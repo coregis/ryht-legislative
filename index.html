@@ -75,11 +75,11 @@
 					if ((visibility === 'visible' || hideOnly) && !showOnly) {
 						map.setLayoutProperty(layerName, 'visibility', 'none');
 						this.className = '';
-					document.getElementById(markerName).classList.add('inactive');
+						document.getElementById(markerName).classList.add('inactive');
 					} else {
 						this.className = 'active';
 						map.setLayoutProperty(layerName, 'visibility', 'visible');
-					document.getElementById(markerName).classList.remove('inactive');
+						document.getElementById(markerName).classList.remove('inactive');
 				}
 			}
 
@@ -133,6 +133,9 @@
 						}
 					}
 				}
+				map.setLayoutProperty(sourceID + '-poly', 'visibility', 'none');
+				map.setPaintProperty(sourceID + '-poly', 'fill-color', 'rgba(200, 200, 200, 0.7)');
+				map.setPaintProperty(sourceID + '-poly', 'fill-outline-color', 'rgba(200, 200, 200, 0.1)');
 			}
 
 			function removeElement(id) {
@@ -295,6 +298,25 @@
 										);
 									}
 								}
+							}
+							for (i in loadedPolygonLayers) {
+								if (
+									(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
+									||
+									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
+								) {
+									showHideLayer(
+										loadedPolygonLayers[i][0],
+										loadedPolygonLayers[i][1],
+										showOnly = coords[4] === '0' ? false : true,
+										hideOnly = coords[4] === '0' ? true : false
+									);
+									map.setFilter(
+										loadedPolygonLayers[i][0],
+										['!=', 'District', parseInt(coords[4])]
+									);
+								}
+
 							}
 							for (i in loadedPointLayers) {
 								if (coords[4] === '0') {
@@ -776,8 +798,8 @@
 						'legendID': 'raising_blended_learners_districts_poly',
 						'displayBehind': 'raising-school-leaders-points',
 						'polygonLayerName': 'raising-blended-learners-districts-poly-fill',
-						'polygonFillColor': 'rgba(158, 215, 194, 100)',
-						'polygonOutlineColor': 'rgba(68, 137, 112, 100)'
+						'polygonFillColor': 'rgba(158, 215, 194, 1)',
+						'polygonOutlineColor': 'rgba(68, 137, 112, 1)'
 					}
 				);
 
