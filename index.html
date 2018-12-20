@@ -279,19 +279,19 @@
 					map.fitBounds(bbox, options={padding: 10, duration: 3000});
 					if (filterField !== undefined) {
 						setTimeout(function(){
-							for (i in loadedPolygonLayers) {
-								showHideLayer(loadedPolygonLayers[i][0], loadedPolygonLayers[i][1], showOnly=true);
+							for (i in loadedLineLayers) {
+								showHideLayer(loadedLineLayers[i][0], loadedLineLayers[i][1], showOnly=true);
 								if (
-									(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
+									(loadedLineLayers[i][0].indexOf("state-senate-districts") > -1)
 									||
-									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
+									(loadedLineLayers[i][0].indexOf("state-house-districts") > -1)
 								) {
 									if (coords[4] === '0') {
-										map.setFilter(loadedPolygonLayers[i][0], null);
+										map.setFilter(loadedLineLayers[i][0], null);
 									} else {
 										map.setFilter(
-											loadedPolygonLayers[i][0],
-											['==', 'District', coords[4]]
+											loadedLineLayers[i][0],
+											['==', 'District', parseInt(coords[4])]
 										);
 									}
 								}
@@ -557,6 +557,7 @@
 			var originalZoomLevel = map.getZoom();
 
 			var loadedPointLayers = [];
+			var loadedLineLayers = [];
 			var loadedPolygonLayers = [];
 
 			function setVisibilityState(params) {
@@ -624,6 +625,9 @@
 						},
 						params.displayBehind
 					);
+					if (params.legendID !== undefined) {
+						loadedLineLayers.push([params.lineLayerName, params.legendID]);
+					}
 				}
 				if ((params.polygonLayerName !== undefined) && (params.polygonLayerName !== false)) {
 					if (params.usedInZoomControl) { visibilityState = 'visible'; }
