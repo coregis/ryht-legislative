@@ -352,16 +352,39 @@ p.moreinfo  {
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-size:14px;
  /* width:auto !important;*/
-  }
+}
 
-  p.programs  {
+/* I'm starting this as a copy of .moreinfo, with just the top & bottom padding removed */
+p.districtswitcher, p.zoomoutlink  {
+  padding: 0px 8px 0px 32px;
+  background: #ffff;
+  color:#4a4a4a;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  font-size:14px;
+ /* width:auto !important;*/
+}
+
+p.districtswitcher  {
+	display: none; /* leave this as display:none because the code in the page will make the right control visible */
+}
+
+p.zoomoutlink {
+	display: block;
+}
+
+/* some text that just needs to be hidden by default so the code can activate the context-appropriate option */
+span#house-district-reference, span#senate-district-reference {
+	display: none;
+}
+
+p.programs  {
   padding: 8px 8px 8px 32px;
   background: #ffff;
   color:#4a4a4a;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-size:10px;
  /* width:auto !important;*/
-  }
+}
 
  .sidenav .programlink {
     /*padding: 8px 8px 8px 32px;*/
