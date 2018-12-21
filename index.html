@@ -31,6 +31,8 @@
 		</style>
 
 		<script>
+			// store this as a global variable so that the stats box can always access the current value
+			var activeDistrict = '0';
 			// first we check for the URL parameter '?districts=senate'.  If found, we'll show state senate districts; otherwise state house
 			var urlParams = {};
 			window.location.href.replace(
@@ -134,7 +136,7 @@
 					}
 				}
 				map.setLayoutProperty(sourceID + '-poly', 'visibility', 'none');
-// IMPORTANT: these paint properties define the appearance the mask layer that deemphasises districts outside the one we've zoomed to.  They will overrule anything that's set when that mask layer was loaded.
+// IMPORTANT: these paint properties define the appearance of the mask layer that deemphasises districts outside the one we've zoomed to.  They will overrule anything that's set when that mask layer was loaded.
 				map.setPaintProperty(sourceID + '-poly', 'fill-color', 'rgba(200, 200, 200, 0.7)');
 				map.setPaintProperty(sourceID + '-poly', 'fill-outline-color', 'rgba(200, 200, 200, 0.1)');
 			}
@@ -330,35 +332,42 @@
 									showHideLayer(loadedPointLayers[i][0], loadedPointLayers[i][1], showOnly=true);
 								}
 							}
+							activeDistrict = coords[4];
 							if (coords[4] !== '0') {
-								for (i = 1500; i <= 4500; i += 1000) {
+								for (i = 500; i <= 5500; i += 1000) {
 									setTimeout(function(){
-										updateStatsBox(filterField, coords[4]);
+										updateStatsBox(filterField);
 									}, i);
 								}
+							} else {
+								document.getElementById('statsBox').style.opacity = 0;
 							}
 						}, 1500);
 					}
 				}
 			}
 
-			function updateStatsBox(districtType, districtID) {
-				document.getElementById('statsBox').style.opacity = 1;
-				if (districtType.indexOf("house") > -1) {
-					document.getElementById("stats.districtType").innerText = "House";
-				} else if (districtType.indexOf("senate") > -1) {
-					document.getElementById("stats.districtType").innerText = "Senate";
+			function updateStatsBox(districtType) {
+				if (activeDistrict !== '0') { // only do anything if we have a selected district
+					document.getElementById('statsBox').style.opacity = 1;
+					if (districtType.indexOf("house") > -1) {
+						document.getElementById("stats.districtType").innerText = "House";
+					} else if (districtType.indexOf("senate") > -1) {
+						document.getElementById("stats.districtType").innerText = "Senate";
+					} else {
+						document.getElementById("stats.districtType").innerText = "";
+					}
+					document.getElementById("stats.districtName").innerText = activeDistrict;
+					for (i in loadedPointLayers) {
+						pointsInDistrict = getUniqueFeatures(
+							map.queryRenderedFeatures( { layers:[loadedPointLayers[i][0]] } ),
+							"unique_id"
+						);
+						counterID = "count." + loadedPointLayers[i][0];
+						document.getElementById(counterID).innerText = pointsInDistrict.length;
+					}
 				} else {
-					document.getElementById("stats.districtType").innerText = "";
-				}
-				document.getElementById("stats.districtName").innerText = districtID;
-				for (i in loadedPointLayers) {
-					pointsInDistrict = getUniqueFeatures(
-						map.queryRenderedFeatures( { layers:[loadedPointLayers[i][0]] } ),
-						"unique_id"
-					);
-					counterID = "count." + loadedPointLayers[i][0];
-					document.getElementById(counterID).innerText = pointsInDistrict.length;
+					document.getElementById('statsBox').style.opacity = 0;
 				}
 			}
 
