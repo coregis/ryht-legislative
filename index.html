@@ -384,11 +384,12 @@
 					overrides = [
 						[" Isd ", " ISD "],
 						[" Cisd ", " CISD "],
-						[" El ", " Elementary "],
-						[" Pri ", " Primary "],
-						[" J H ", " Junior High" ],
-						[" Int ", " Intermediate "],
-						[" H S ", " High "],
+						[" El ", " Elementary School "],
+						[" Pri ", " Primary School "],
+						[" J H ", " Junior High School " ],
+						[" Junior High School Moore ", " J.H. Moore "], // comedy hour special case here, because the line above expands "J H Moore El" to "Junior High Moore Elementary School"
+						[" Int ", " Intermediate School "],
+						[" H S ", " High School "],
 						[" Aec ", " Alternative Education Center "]
 					];
 					for (i in overrides) {
