@@ -134,6 +134,7 @@
 					}
 				}
 				map.setLayoutProperty(sourceID + '-poly', 'visibility', 'none');
+// IMPORTANT: these paint properties define the appearance the mask layer that deemphasises districts outside the one we've zoomed to.  They will overrule anything that's set when that mask layer was loaded.
 				map.setPaintProperty(sourceID + '-poly', 'fill-color', 'rgba(200, 200, 200, 0.7)');
 				map.setPaintProperty(sourceID + '-poly', 'fill-outline-color', 'rgba(200, 200, 200, 0.1)');
 			}
@@ -781,7 +782,7 @@
 							'legendID': 'state_house_districts',
 							'displayBehind': 'raising-school-leaders-points',
 							'polygonLayerName': 'state-house-districts-poly',
-							'polygonFillColor': 'rgba(200, 100, 240, 0)',
+							'polygonFillColor': 'rgba(200, 100, 240, 0)', // IMPORTANT: the polygon fill and outline colours for House and Senate districts will be overridden by the populateZoomControl() function, so edit them there.  Here the important thing is to keep the alpha value at 0 so that the layer won't appear to blink on and off during the loading process.
 							'polygonOutlineColor': 'rgba(200, 100, 240, 0)',
 							'visibleOnLoad': true,
 							'usedInZoomControl': true
