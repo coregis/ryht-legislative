@@ -372,7 +372,6 @@
 			}
 
 			function standardizeCase(txt) {
-				console.log("INPUT", txt);
 				if (txt === undefined || txt === "") {
 					return "";
 				} else {
@@ -395,7 +394,6 @@
 					for (i in overrides) {
 						txt = txt.replace(overrides[i][0], overrides[i][1]);
 					}
-					console.log("OUTPUT", txt);
 					return txt.trim();
 				}
 			}
