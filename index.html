@@ -1003,8 +1003,10 @@
 				html = html + "<span class='varname'>Institute: </span> <span class='attribute'>" + data.institute + "</span>";
 				html = html + "<br />"
 				html = html + "<span class='varname'>Campus: </span> <span class='attribute'>" + standardizeCase(data.campus) + "</span>";
-				html = html + "<br />"
-				html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + standardizeCase(data.district) + "</span>";
+				if (data.district) {
+					html = html + "<br />"
+					html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + standardizeCase(data.district) + "</span>";
+				}
 				return html;
 				//this will return the string to the calling function
 
