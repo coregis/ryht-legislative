@@ -73,6 +73,7 @@
 			// now we can check the two showXDistricts variables anywhere that we might introduce House or Senate districts to decide which one to show
 
 			function showHideLayer(layerName, markerName, showOnly=false, hideOnly=false) {
+				console.log(layerName, markerName, showOnly, hideOnly);
 				var visibility = map.getLayoutProperty(layerName, 'visibility');
 					if ((visibility === 'visible' || hideOnly) && !showOnly) {
 						map.setLayoutProperty(layerName, 'visibility', 'none');
@@ -543,11 +544,11 @@
 				<div class='legend-title'>Click on a layer name below to toggle its visibility</div>
 				<div class='legend-scale'>
 					<ul class='legend-labels'>
-						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses_eye'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
-						<li onClick="showHideLayer('raising-family-partnerships-points', markerName='raising_family_partnerships_eye');"><span id="raising_family_partnerships" class="inactive"></span>Raising Family Partnerships</li>
-						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars_eye');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
-						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers_eye');"><span id="raising_texas_teachers" class="inactive"></span>Partner Universities</li>
-						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders_eye');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
+						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
+						<li onClick="showHideLayer('raising-family-partnerships-points', markerName='raising_family_partnerships');"><span id="raising_family_partnerships" class="inactive"></span>Raising Family Partnerships</li>
+						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
+						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Partner Universities</li>
+						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
 						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
 						<li id="senate_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
