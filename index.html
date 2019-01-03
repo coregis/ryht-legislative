@@ -846,11 +846,29 @@
 			*****************************************************
 		*/
 
+		// generalised code to add district info
+		function expandDistrictInfo(district) {
+			// make sure we have a district to use
+			if (district.length > 0 && district[0].layer.id === 'school_house_senate_districts_UNION-poly') {
+				data = district[0].properties;
+				console.log(data);
+				var html = "<br />";
+				html += "<span class='varname'>House District: </span> <span class='attribute'>" + data.HseDistNum + "</span>";
+				html += "<br />";
+				html += "<span class='varname'>Senate District: </span> <span class='attribute'>" + data.SenDistNum + "</span>";
+				return html;
+			} else {
+				// if there's no appropriate district match, then just return an empty string so we don't get "undefined" in the popup
+				return '';
+			}
+		}
+
 		//raising blended learners campuses popup
 			map.on('click', 'raising-blended-learners-campuses-points', function (e) {
+				var district = map.queryRenderedFeatures(e.point, {layers: ['school_house_senate_districts_UNION-poly']});
 				new mapboxgl.Popup()
 					.setLngLat(e.lngLat)
-					.setHTML(fillpopup_rbl(e.features[0].properties))
+					.setHTML(fillpopup_rbl(e.features[0].properties) + expandDistrictInfo(district))
 					.addTo(map);
 			});
 
@@ -878,9 +896,10 @@
 
 		//raising family partnerships popup
 			map.on('click', 'raising-family-partnerships-points', function (e) {
+				var district = map.queryRenderedFeatures(e.point, {layers: ['school_house_senate_districts_UNION-poly']});
 				new mapboxgl.Popup()
 					.setLngLat(e.lngLat)
-					.setHTML(fillpopup_rfp(e.features[0].properties))
+					.setHTML(fillpopup_rfp(e.features[0].properties) + expandDistrictInfo(district))
 					.addTo(map);
 			});
 
@@ -904,9 +923,10 @@
 
 		//charles butt scholars popup
 			map.on('click', 'charles-butt-scholars-points', function (e) {
+				var district = map.queryRenderedFeatures(e.point, {layers: ['school_house_senate_districts_UNION-poly']});
 				new mapboxgl.Popup()
 					.setLngLat(e.lngLat)
-					.setHTML(fillpopup_cbs(e.features[0].properties))
+					.setHTML(fillpopup_cbs(e.features[0].properties) + expandDistrictInfo(district))
 					.addTo(map);
 			});
 
@@ -932,9 +952,10 @@
 
 		//institutes for higher education popup
 			map.on('click', 'raising-texas-teachers-points', function (e) {
+				var district = map.queryRenderedFeatures(e.point, {layers: ['school_house_senate_districts_UNION-poly']});
 				new mapboxgl.Popup()
 					.setLngLat(e.lngLat)
-					.setHTML(fillpopup_rtt(e.features[0].properties))
+					.setHTML(fillpopup_rtt(e.features[0].properties) + expandDistrictInfo(district))
 					.addTo(map);
 			});
 
@@ -959,9 +980,10 @@
 
 		//raising school leaders popup
 			map.on('click', 'raising-school-leaders-points', function (e) {
+				var district = map.queryRenderedFeatures(e.point, {layers: ['school_house_senate_districts_UNION-poly']});
 				new mapboxgl.Popup()
 					.setLngLat(e.lngLat)
-					.setHTML(fillpopup_rsl(e.features[0].properties))
+					.setHTML(fillpopup_rsl(e.features[0].properties) + expandDistrictInfo(district))
 					.addTo(map);
 			});
 
