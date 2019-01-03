@@ -816,7 +816,9 @@
 					}
 				);
 
-				// This one's a special case: it's never displayed, but it's used to set what will appear in popups when someone clicks on the map
+				// This is a special cases: the layer is never displayed, but can be used to set what will appear in popups when someone clicks on the map
+
+				
 				addVectorLayer(
 					map,
 					{
@@ -984,6 +986,65 @@
 
 			}
 
+		// These are the popups for the polygon district layers, using Eldan's House/Senate 'show' logic
+		// When a click event occurs on a feature in the unioned districts layer, open a popup for
+		// the correct district type at the location of the click, with description HTML from its properties.
+
+		if (showHouseDistricts) {
+		map.on('click', 'school_house_senate_districts_UNION-poly', function (e) {
+				new mapboxgl.Popup()
+					.setLngLat(e.lngLat)
+					.setHTML(fillpopup(e.features[0].properties))
+					.addTo(map);
+			});
+
+			 // Change the cursor to a pointer when the mouse is over the house districts layer.
+				map.on('mouseenter', 'school_house_senate_districts_UNION-poly', function () {
+					map.getCanvas().style.cursor = 'pointer';
+				});
+
+				// Change it back to a pointer when it leaves.
+				map.on('mouseleave', 'school_house_senate_districts_UNION-poly', function () {
+					map.getCanvas().style.cursor = '';
+				});
+
+			function fillpopup(data){
+				var html = "";
+				html = html + "<span class='varname'>House District: </span> <span class='attribute'>" + data.HseDistNum + "</span>";				
+				return html;
+				//this will return the string to the calling function
+
+				}	
+			}
+			
+		if (showSenateDistricts) {
+		map.on('click', 'school_house_senate_districts_UNION-poly', function (e) {
+				new mapboxgl.Popup()
+					.setLngLat(e.lngLat)
+					.setHTML(fillpopup(e.features[0].properties))
+					.addTo(map);
+			});
+
+			 // Change the cursor to a pointer when the mouse is over the house districts layer.
+				map.on('mouseenter', 'school_house_senate_districts_UNION-poly', function () {
+					map.getCanvas().style.cursor = 'pointer';
+				});
+
+				// Change it back to a pointer when it leaves.
+				map.on('mouseleave', 'school_house_senate_districts_UNION-poly', function () {
+					map.getCanvas().style.cursor = '';
+				});
+
+			function fillpopup(data){
+				var html = "";
+				html = html + "<span class='varname'>Senate District: </span> <span class='attribute'>" + data.SenDistNum + "</span>";				
+				return html;
+				//this will return the string to the calling function
+
+				}	
+			}			
+			
+			
 		//****************END POP UPS****************
 
 			function fetchJSONFile(path, callback) {
