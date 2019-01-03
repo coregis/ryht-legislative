@@ -816,9 +816,8 @@
 					}
 				);
 
-				// This is a special cases: the layer is never displayed, but can be used to set what will appear in popups when someone clicks on the map
 
-				
+				// This is a special cases: the layer is never displayed, but can be used to set what will appear in popups when someone clicks on the map
 				addVectorLayer(
 					map,
 					{
@@ -1010,13 +1009,13 @@
 
 			function fillpopup(data){
 				var html = "";
-				html = html + "<span class='varname'>House District: </span> <span class='attribute'>" + data.HseDistNum + "</span>";				
+				html = html + "<span class='varname'>House District: </span> <span class='attribute'>" + data.HseDistNum + "</span>";
 				return html;
 				//this will return the string to the calling function
 
-				}	
+				}
 			}
-			
+
 		if (showSenateDistricts) {
 		map.on('click', 'school_house_senate_districts_UNION-poly', function (e) {
 				new mapboxgl.Popup()
@@ -1037,14 +1036,14 @@
 
 			function fillpopup(data){
 				var html = "";
-				html = html + "<span class='varname'>Senate District: </span> <span class='attribute'>" + data.SenDistNum + "</span>";				
+				html = html + "<span class='varname'>Senate District: </span> <span class='attribute'>" + data.SenDistNum + "</span>";
 				return html;
 				//this will return the string to the calling function
 
-				}	
-			}			
-			
-			
+				}
+			}
+
+
 		//****************END POP UPS****************
 
 			function fetchJSONFile(path, callback) {
