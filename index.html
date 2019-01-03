@@ -303,17 +303,17 @@
 								}
 							}
 							for (i in loadedPolygonLayers) {
+								showHideLayer(
+									loadedPolygonLayers[i][0],
+									loadedPolygonLayers[i][1],
+									showOnly = coords[4] === '0' ? false : true,
+									hideOnly = coords[4] === '0' ? true : false
+								);
 								if (
 									(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
 									||
 									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
 								) {
-									showHideLayer(
-										loadedPolygonLayers[i][0],
-										loadedPolygonLayers[i][1],
-										showOnly = coords[4] === '0' ? false : true,
-										hideOnly = coords[4] === '0' ? true : false
-									);
 									map.setFilter(
 										loadedPolygonLayers[i][0],
 										['!=', 'District', parseInt(coords[4])]
