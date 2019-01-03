@@ -303,17 +303,17 @@
 								}
 							}
 							for (i in loadedPolygonLayers) {
+								showHideLayer(
+									loadedPolygonLayers[i][0],
+									loadedPolygonLayers[i][1],
+									showOnly = coords[4] === '0' ? false : true,
+									hideOnly = coords[4] === '0' ? true : false
+								);
 								if (
 									(loadedPolygonLayers[i][0].indexOf("state-senate-districts") > -1)
 									||
 									(loadedPolygonLayers[i][0].indexOf("state-house-districts") > -1)
 								) {
-									showHideLayer(
-										loadedPolygonLayers[i][0],
-										loadedPolygonLayers[i][1],
-										showOnly = coords[4] === '0' ? false : true,
-										hideOnly = coords[4] === '0' ? true : false
-									);
 									map.setFilter(
 										loadedPolygonLayers[i][0],
 										['!=', 'District', parseInt(coords[4])]
@@ -372,7 +372,6 @@
 			}
 
 			function standardizeCase(txt) {
-				console.log("INPUT", txt);
 				if (txt === undefined || txt === "") {
 					return "";
 				} else {
@@ -384,17 +383,17 @@
 					overrides = [
 						[" Isd ", " ISD "],
 						[" Cisd ", " CISD "],
-						[" El ", " Elementary "],
-						[" Pri ", " Primary "],
-						[" J H ", " Junior High" ],
-						[" Int ", " Intermediate "],
-						[" H S ", " High "],
+						[" El ", " Elementary School "],
+						[" Pri ", " Primary School "],
+						[" J H ", " Junior High School " ],
+						[" Junior High School Moore ", " J.H. Moore "], // comedy hour special case here, because the line above expands "J H Moore El" to "Junior High Moore Elementary School"
+						[" Int ", " Intermediate School "],
+						[" H S ", " High School "],
 						[" Aec ", " Alternative Education Center "]
 					];
 					for (i in overrides) {
 						txt = txt.replace(overrides[i][0], overrides[i][1]);
 					}
-					console.log("OUTPUT", txt);
 					return txt.trim();
 				}
 			}
