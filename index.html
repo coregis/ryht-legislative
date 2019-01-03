@@ -73,7 +73,6 @@
 			// now we can check the two showXDistricts variables anywhere that we might introduce House or Senate districts to decide which one to show
 
 			function showHideLayer(layerName, markerName, showOnly=false, hideOnly=false) {
-				console.log(layerName, markerName, showOnly, hideOnly);
 				var visibility = map.getLayoutProperty(layerName, 'visibility');
 					if ((visibility === 'visible' || hideOnly) && !showOnly) {
 						map.setLayoutProperty(layerName, 'visibility', 'none');
@@ -270,10 +269,6 @@
 			})
 
 			function zoomToPolygon(sourceID, coords, filterField) {
-				console.log(sourceID, coords, filterField);
-				console.log(loadedPointLayers);
-				console.log(loadedPolygonLayers);
-				console.log(loadedLineLayers);
 				if (typeof coords !== 'undefined') {
 					document.getElementById('statsBox').style.opacity = 0;
 					coords = coords.split(",");
@@ -377,7 +372,6 @@
 			}
 
 			function standardizeCase(txt) {
-				console.log("INPUT", txt);
 				if (txt === undefined || txt === "") {
 					return "";
 				} else {
@@ -399,7 +393,6 @@
 					for (i in overrides) {
 						txt = txt.replace(overrides[i][0], overrides[i][1]);
 					}
-					console.log("OUTPUT", txt);
 					return txt.trim();
 				}
 			}
