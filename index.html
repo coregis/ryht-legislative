@@ -844,7 +844,7 @@
 			the location of the click, with description HTML from its properties
 			*****************************************************
 		*/
-/*
+
 		//raising blended learners campuses popup
 			map.on('click', 'raising-blended-learners-campuses-points', function (e) {
 				new mapboxgl.Popup()
@@ -1043,60 +1043,7 @@
 
 				}	
 			}			
-*/
-
-		//****************TESTING SINGLE CLICK EVENT POP-UPS****************	
-
-			// When a click event occurs for a polygon, open a popup with details
-				
-				map.on('click', function (e) {
-					var pointFeatures = map.queryRenderedFeatures(e.point, { layers: ['raising-school-leaders-points'] });
-
-					if (pointFeatures.length > 0) {
-						var feature = pointFeatures[0];
-						// Populate the popup and set its coordinates
-						var popup = new mapboxgl.Popup()
-							.setLngLat(feature.geometry.coordinates)
-							.setHTML(fillpopup_rsl(e.features[0].properties))
-							.addTo(map);
-						return; // don't display any more pop ups
-					}
-					
-						function fillpopup_rsl(data){
-							var html = "";
-							html = html + "<span class='varname'>Institute: </span> <span class='attribute'>" + data.institute + "</span>";
-							html = html + "<br />"
-							html = html + "<span class='varname'>Campus: </span> <span class='attribute'>" + standardizeCase(data.campus) + "</span>";
-							html = html + "<br />"
-							html = html + "<span class='varname'>School District: </span> <span class='attribute'>" + standardizeCase(data.district) + "</span>";
-							return html;
-							//this will return the string to the calling function
-							}
-
-					var polygonFeatures = map.queryRenderedFeatures(e.point, { layers: ['school_house_senate_districts_UNION-poly'] });
-
-					if (!polygonFeatures.length) {
-						return;
-					}
-
-					var feature = polygonFeatures [0];
-
-					// Populate the popup and set its coordinates
-					var popup = new mapboxgl.Popup()
-						.setLngLat(map.unproject(e.point))
-						.setHTML(fillpopup_dist(e.features[0].properties))
-						.addTo(map);
-
-					function fillpopup_dist(data){
-						var html = "";
-						html = html + "<span class='varname'>House District: </span> <span class='attribute'>" + data.HseDistNum + "</span>";				
-						return html;
-						//this will return the string to the calling function	
-						}
-								
-				});
-		
-		//****************END TEST****************
+			
 			
 		//****************END POP UPS****************
 
