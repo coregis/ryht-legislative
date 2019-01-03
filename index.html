@@ -851,11 +851,12 @@
 			// make sure we have a district to use
 			if (district.length > 0 && district[0].layer.id === 'school_house_senate_districts_UNION-poly') {
 				data = district[0].properties;
-				console.log(data);
-				var html = "<br />";
-				html += "<span class='varname'>House District: </span> <span class='attribute'>" + data.HseDistNum + "</span>";
-				html += "<br />";
-				html += "<span class='varname'>Senate District: </span> <span class='attribute'>" + data.SenDistNum + "</span>";
+				var html = "<hr />";
+				html += "<span class='varname'>";
+				html += showHouseDistricts ? "House District: " : "Senate District: ";
+				html += "</span> <span class='attribute'>";
+				html += showHouseDistricts ? data.HseDistNum : data.SenDistNum;
+				html += "</span>";
 				return html;
 			} else {
 				// if there's no appropriate district match, then just return an empty string so we don't get "undefined" in the popup
