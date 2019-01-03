@@ -592,6 +592,7 @@
 			var originalZoomLevel = map.getZoom();
 
 			var loadedPointLayers = [];
+			var loadedPointLayerNames = [];
 			var loadedLineLayers = [];
 			var loadedPolygonLayers = [];
 
@@ -632,6 +633,7 @@
 						map.setLayoutProperty(params.layerName, 'icon-size', (1 + (map.getZoom() / originalZoomLevel - 1) * params.scalingFactor) * params.iconSize);
 					});
 					loadedPointLayers.push([params.layerName, params.legendID]);
+					loadedPointLayerNames.push(params.layerName)
 				});
 			}
 
@@ -1000,10 +1002,13 @@
 			}
 
 			map.on('click', 'school_house_senate_districts_UNION-poly', function (e) {
-				new mapboxgl.Popup()
-					.setLngLat(e.lngLat)
-					.setHTML(fillpopup(e.features[0].properties))
-					.addTo(map);
+				var pointFeatures = map.queryRenderedFeatures(e.point, {layers: loadedPointLayerNames});
+				if (pointFeatures.length === 0) {
+					new mapboxgl.Popup()
+						.setLngLat(e.lngLat)
+						.setHTML(fillpopup(e.features[0].properties))
+						.addTo(map);
+				}
 			});
 
 // Change the cursor to a pointer when the mouse is over the house districts layer.
