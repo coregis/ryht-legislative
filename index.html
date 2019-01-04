@@ -846,7 +846,7 @@
 			// make sure we have a district to use
 			if (district.length > 0 && district[0].layer.id === 'school_house_senate_districts_UNION-poly') {
 				data = district[0].properties;
-				var html = "<hr />";
+				var html = "<hr class='divider'/>";
 				html += "<span class='varname'>";
 				html += showHouseDistricts ? "House District: " : "Senate District: ";
 				html += "</span> <span class='attribute'>";

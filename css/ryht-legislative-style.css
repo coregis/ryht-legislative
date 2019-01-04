@@ -503,7 +503,8 @@ button.collapsible  {
  /* width:auto !important;*/
   }
   
-  /*Adding radio buttons to the House/Senate toggle*/
-  
+/*Styling for hr in pop-ups*/
 
-  
+hr.divider {
+  border-top: 1px dotted #bdbfc1;
+}
