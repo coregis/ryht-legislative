@@ -98,11 +98,11 @@
 				else {
 					if (showHouseDistricts) {
 						populateZoomControl("house-districts-control", "state-house-districts", "District", "Texas House Districts");
-						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-house-districts-lines');
+						map.moveLayer('state-house-districts-lines');
 					}
 					if (showSenateDistricts) {
 						populateZoomControl("senate-districts-control", "state-senate-districts", "District", "Texas Senate Districts");
-						map.moveLayer('raising-blended-learners-districts-poly-fill', 'state-senate-districts-lines');
+						map.moveLayer('state-senate-districts-lines');
 					}
 					// using a timeout here to stop this from running before the big Raising School Leaders layer has finished loading
 					setTimeout(function(){
@@ -410,7 +410,7 @@
 				<br /><br /><br />
 			</p>
 			<p class="moreinfo">
-				Use the drop-down menus below to zoom to a <span id="house-district-reference">House</span><span id="senate-district-reference">Senate</span> District of your choice. Choose the top entry on any drop down to return to the full extent of the state.
+				Use the drop-down menus below to zoom to a <span id="house-district-reference">House</span><span id="senate-district-reference">Senate</span> District of your choice.
 				<br /><br />
 
 				<!--Drop down controls-->
@@ -420,17 +420,27 @@
 
 				<!-- House/Senate districts switcher -->
 
-				<p onClick="zoomToPolygon('', '-108,25,-88,37,0', '')" class="zoomoutlink">Show whole state</p>
+				<p onClick="zoomToPolygon('', '-108,25,-88,37,0', '');" class="zoomoutlink"><span id="texas_icon" style="cursor:pointer"></span>Show whole state
+				</p>
 
 				<p id="switch-to-senate-districts" class="districtswitcher">
-					Showing Texas <b>House</b> Districts.
+					<input type="radio" checked="true">
+						<span class="checkmark"></span>Texas <b>House</b> Districts.
+
 					<br />
-					<a href="index.html?districts=senate">Switch to Texas <b>Senate</b> Districts.</a>
+
+					<a href="index.html?districts=senate"><input type="radio"  style="cursor:pointer" onclick="javascript:window.location.href='index.html?districts=senate'; return false;"/>
+						<span class="checkmark"></span>Texas <b>Senate</b> Districts.</a>
 				</p>
+
 				<p id="switch-to-house-districts" class="districtswitcher">
-					Showing Texas <b>Senate</b> Districts.
+					<input type="radio" checked="true">
+						<span class="checkmark"></span>Texas <b>Senate</b> Districts.
+
 					<br />
-					<a href="index.html?districts=house">Switch to Texas <b>House</b> Districts.</a>
+
+					<a href="index.html?districts=house"><input type="radio"  style="cursor:pointer" onclick="javascript:window.location.href='index.html?districts=house'; return false;"/>
+						<span class="checkmark"></span>Texas <b>House</b> Districts.</a>
 				</p>
 			</p>
 
@@ -542,12 +552,11 @@
 				<div class='legend-title'>Click on a layer name below to toggle its visibility</div>
 				<div class='legend-scale'>
 					<ul class='legend-labels'>
-						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
+						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses');"><span id="raising_blended_learners_campuses" class="inactive"></span>Raising Blended Learners Campuses</li>
 						<li onClick="showHideLayer('raising-family-partnerships-points', markerName='raising_family_partnerships');"><span id="raising_family_partnerships" class="inactive"></span>Raising Family Partnerships</li>
 						<li onClick="showHideLayer('charles-butt-scholars-points', markerName='charles_butt_scholars');"><span id="charles_butt_scholars" class="inactive"></span>Charles Butt Scholars</li>
 						<li onClick="showHideLayer('raising-texas-teachers-points', markerName='raising_texas_teachers');"><span id="raising_texas_teachers" class="inactive"></span>Partner Universities</li>
 						<li onClick="showHideLayer('raising-school-leaders-points', markerName='raising_school_leaders');"><span id="raising_school_leaders" class="inactive"></span>Raising School Leaders</li>
-						<li onClick="showHideLayer('raising-blended-learners-campuses-points', markerName='raising_blended_learners_campuses'); showHideLayer('raising-blended-learners-districts-poly-fill', markerName='raising_blended_learners_districts_poly');"><span id="raising_blended_learners_districts_poly" class="inactive"></span>Raising Blended Learners Districts</li>
 						<li id="house_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-house-districts-lines', markerName='state_house_districts');"><span id="state_house_districts" class="inactive"></span>State House Districts</li>
 						<li id="senate_districts_legend_entry" style="display: none;" onClick="showHideLayer('state-senate-districts-lines', markerName='state_senate_districts');"><span id="state_senate_districts" class="inactive"></span>State Senate Districts</li>
 					</ul>
@@ -804,20 +813,6 @@
 					);
 				}
 
-				addVectorLayer(
-					map,
-					{
-						'sourceName': 'raising-blended-learners-districts',
-						'sourceID': 'raising_blended_learners_districts',
-						'sourceURL': 'mapbox://core-gis.b0265189',
-						'legendID': 'raising_blended_learners_districts_poly',
-						'displayBehind': 'raising-school-leaders-points',
-						'polygonLayerName': 'raising-blended-learners-districts-poly-fill',
-						'polygonFillColor': 'rgba(158, 215, 194, 1)',
-						'polygonOutlineColor': 'rgba(68, 137, 112, 1)'
-					}
-				);
-
 
 				// This is a special cases: the layer is never displayed, but can be used to set what will appear in popups when someone clicks on the map
 				addVectorLayer(
@@ -851,7 +846,7 @@
 			// make sure we have a district to use
 			if (district.length > 0 && district[0].layer.id === 'school_house_senate_districts_UNION-poly') {
 				data = district[0].properties;
-				var html = "<hr />";
+				var html = "<hr class='divider'/>";
 				html += "<span class='varname'>";
 				html += showHouseDistricts ? "House District: " : "Senate District: ";
 				html += "</span> <span class='attribute'>";

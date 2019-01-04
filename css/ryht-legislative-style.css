@@ -235,14 +235,6 @@ ul{
 	display: block;
 	float: left;
 }
-#raising_blended_learners_districts_poly
-{
-	background:url(../markers/raising_blended_learners_districts_poly.svg) left center;
-	width:11px;
-	height:16px;
-	display: block;
-	float: left;
-}
 #districts_of_innovation_poly
 {
 	background:url(../markers/districts_of_innovation_poly.svg) left center;
@@ -275,6 +267,16 @@ ul{
 	display: block;
 	float: left;
 }
+
+#texas_icon
+{
+	background:url(../images/texas.svg) left center;
+	width:26px;
+	height:22px;
+	display: block;
+	float: left;
+}
+
   .legend .legend-source {
     font-size: 70%;
     color: #999;
@@ -500,3 +502,9 @@ button.collapsible  {
   font-size:12px;
  /* width:auto !important;*/
   }
+  
+/*Styling for hr in pop-ups*/
+
+hr.divider {
+  border-top: 1px dotted #bdbfc1;
+}
