@@ -235,14 +235,6 @@ ul{
 	display: block;
 	float: left;
 }
-#raising_blended_learners_districts_poly
-{
-	background:url(../markers/raising_blended_learners_districts_poly.svg) left center;
-	width:11px;
-	height:16px;
-	display: block;
-	float: left;
-}
 #districts_of_innovation_poly
 {
 	background:url(../markers/districts_of_innovation_poly.svg) left center;
