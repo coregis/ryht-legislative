@@ -275,6 +275,16 @@ ul{
 	display: block;
 	float: left;
 }
+
+#texas_icon
+{
+	background:url(../images/texas.svg) left center;
+	width:26px;
+	height:22px;
+	display: block;
+	float: left;
+}
+
   .legend .legend-source {
     font-size: 70%;
     color: #999;
