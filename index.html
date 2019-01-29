@@ -113,6 +113,19 @@
 						map.moveLayer('raising-blended-learners-campuses-points', 'raising-texas-teachers-points');
 						map.moveLayer('raising-school-leaders-points', 'raising-blended-learners-points');
 						map.moveLayer('raising-school-leaders-points', 'charles-butt-scholars-points');
+						// the longer timeout for this function call does two things:
+						// 1) add an extra layer of protection against it running before the layers have completely finished loading (which would make it display 0 for a state-wide total)
+						// 2) stop it from flashing up the state-wide total while zooming to a district
+						setTimeout(function(){
+							if (showHouseDistricts) {
+								console.log("updating stats for House");
+								updateStatsBox('house_dist');
+							}
+							if (showSenateDistricts) {
+								console.log("updating stats for Senate");
+								updateStatsBox('senate_dist');
+							}
+						}, 1500);
 					}, 100);
 				}
 			}
@@ -333,14 +346,10 @@
 								}
 							}
 							activeDistrict = coords[4];
-							if (coords[4] !== '0') {
-								for (i = 500; i <= 5500; i += 1000) {
-									setTimeout(function(){
-										updateStatsBox(filterField);
-									}, i);
-								}
-							} else {
-								document.getElementById('statsBox').style.opacity = 0;
+							for (i = 500; i <= 5500; i += 1000) {
+								setTimeout(function(){
+									updateStatsBox(filterField);
+								}, i);
 							}
 						}, 1500);
 					}
@@ -348,26 +357,28 @@
 			}
 
 			function updateStatsBox(districtType) {
-				if (activeDistrict !== '0') { // only do anything if we have a selected district
-					document.getElementById('statsBox').style.opacity = 1;
-					if (districtType.indexOf("house") > -1) {
-						document.getElementById("stats.districtType").innerText = "House";
-					} else if (districtType.indexOf("senate") > -1) {
-						document.getElementById("stats.districtType").innerText = "Senate";
-					} else {
-						document.getElementById("stats.districtType").innerText = "";
-					}
-					document.getElementById("stats.districtName").innerText = activeDistrict;
-					for (i in loadedPointLayers) {
-						pointsInDistrict = getUniqueFeatures(
-							map.queryRenderedFeatures( { layers:[loadedPointLayers[i][0]] } ),
-							"unique_id"
-						);
-						counterID = "count." + loadedPointLayers[i][0];
-						document.getElementById(counterID).innerText = pointsInDistrict.length;
-					}
+				document.getElementById('statsBox').style.opacity = 1;
+				if (activeDistrict === '0') {
+					document.getElementById("stats.districtType").innerText = "the State of Texas";
+				} else if (districtType.indexOf("house") > -1) {
+					document.getElementById("stats.districtType").innerText = "House District";
+				} else if (districtType.indexOf("senate") > -1) {
+					document.getElementById("stats.districtType").innerText = "Senate District";
 				} else {
-					document.getElementById('statsBox').style.opacity = 0;
+					document.getElementById("stats.districtType").innerText = "";
+				}
+				if (activeDistrict === '0') {
+					document.getElementById("stats.districtName").innerText = "";
+				} else {
+					document.getElementById("stats.districtName").innerText = activeDistrict;
+				}
+				for (i in loadedPointLayers) {
+					pointsInDistrict = getUniqueFeatures(
+						map.queryRenderedFeatures( { layers:[loadedPointLayers[i][0]] } ),
+						"unique_id"
+					);
+					counterID = "count." + loadedPointLayers[i][0];
+					document.getElementById(counterID).innerText = pointsInDistrict.length;
 				}
 			}
 
@@ -526,9 +537,11 @@
 
 			<div class='stats' id='statsBox'>
 				<div class='stats-title'>
-					Number of Programs in
+					Number of Programs
 					<br />
-					<span class="select" id="stats.districtType"></span> District <span class="select" id="stats.districtName"></span>
+					in
+					<span class="select" id="stats.districtType"></span>
+					<span class="select" id="stats.districtName"></span>
 				</div>
 				<div class='stats-scale'>
 					<ul class='stats-labels'>
@@ -720,7 +733,7 @@
 						'iconSize': 0.1, // a size multiplier for the icon, which should be saved at 1/x times the intended initial display size, so that when it gets scaled up on zooming in it will still look good
 						'legendID': 'raising_family_partnerships', // OPTIONAL: the id in the legend, so we can set it to active or inactive as appropriate. Simply leave out for layers that don't appear in the legend
 						'scalingFactor': 2.5, // OPTIONAL: how much to magnify the markers by when zooming in.  Defaults to 2.5 if not specified; set to zero to have no zoom at all.
-						'visibleOnLoad': false // set the optional final argument to true to have the layer visible on load
+						'visibleOnLoad': true // set the optional final argument to true to have the layer visible on load
 					}
 				);
 
@@ -732,7 +745,8 @@
 						'layerName': 'raising-blended-learners-campuses-points',
 						'icon': 'raising_blended_learners_campuses_large',
 						'iconSize': 0.1,
-						'legendID': 'raising_blended_learners_campuses'
+						'legendID': 'raising_blended_learners_campuses',
+						'visibleOnLoad': true
 					}
 				);
 
@@ -744,7 +758,8 @@
 						'layerName': 'charles-butt-scholars-points',
 						'icon': 'charles_butt_scholars_large',
 						'iconSize': 0.1,
-						'legendID': 'charles_butt_scholars'
+						'legendID': 'charles_butt_scholars',
+						'visibleOnLoad': true
 					}
 				);
 
@@ -756,7 +771,8 @@
 						'layerName': 'raising-texas-teachers-points',
 						'icon': 'raising_texas_teachers_large',
 						'iconSize': 0.1,
-						'legendID': 'raising_texas_teachers'
+						'legendID': 'raising_texas_teachers',
+						'visibleOnLoad': true
 					}
 				);
 
@@ -769,7 +785,8 @@
 						'icon': 'raising_school_leaders_large',
 						'iconSize': 0.1,
 						'legendID': 'raising_school_leaders',
-						'scalingFactor': 0.5
+						'scalingFactor': 0.5,
+						'visibleOnLoad': true
 					}
 				);
 
